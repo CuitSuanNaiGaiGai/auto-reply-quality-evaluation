@@ -1,0 +1,1498 @@
+{
+  "metadata": {
+    "judge_mode": "mock",
+    "evaluator": {
+      "mode": "mock",
+      "version": "mock-rubric-1.0"
+    },
+    "generated_at_utc": "2026-09-21T14:49:27.269650+00:00",
+    "input_file": "task3_auto_replies.json",
+    "human_reference_used_for_scoring": false
+  },
+  "summary": {
+    "case_count": 20,
+    "overall_mean": 64.49,
+    "overall_median": 63.62,
+    "overall_min": 47.25,
+    "overall_max": 88.5,
+    "quality_bands": {
+      "excellent": 1,
+      "good": 3,
+      "needs_improvement": 9,
+      "poor": 7
+    },
+    "metric_stats": {
+      "intent_accuracy": {
+        "label": "意图准确性",
+        "weight": 0.25,
+        "mean": 70.0,
+        "median": 75.0,
+        "min": 50.0,
+        "max": 100.0,
+        "distribution": {
+          "poor_0_59": 7,
+          "acceptable_60_74": 1,
+          "strong_75_100": 12
+        }
+      },
+      "usefulness": {
+        "label": "有用性与服务闭环",
+        "weight": 0.3,
+        "mean": 35.0,
+        "median": 32.5,
+        "min": 10.0,
+        "max": 75.0,
+        "distribution": {
+          "poor_0_59": 16,
+          "acceptable_60_74": 3,
+          "strong_75_100": 1
+        }
+      },
+      "groundedness": {
+        "label": "事实依据与幻觉风险",
+        "weight": 0.3,
+        "mean": 79.5,
+        "median": 75.0,
+        "min": 35.0,
+        "max": 100.0,
+        "distribution": {
+          "poor_0_59": 3,
+          "acceptable_60_74": 1,
+          "strong_75_100": 16
+        }
+      },
+      "tone": {
+        "label": "语气与情绪适配",
+        "weight": 0.1,
+        "mean": 81.0,
+        "median": 80.0,
+        "min": 40.0,
+        "max": 100.0,
+        "distribution": {
+          "poor_0_59": 2,
+          "acceptable_60_74": 0,
+          "strong_75_100": 18
+        }
+      },
+      "clarity": {
+        "label": "清晰与简洁",
+        "weight": 0.05,
+        "mean": 90.75,
+        "median": 90.0,
+        "min": 75.0,
+        "max": 100.0,
+        "distribution": {
+          "poor_0_59": 0,
+          "acceptable_60_74": 0,
+          "strong_75_100": 20
+        }
+      }
+    },
+    "risk_tag_counts": {
+      "self_service_deflection": 15,
+      "unsupported_claim": 11,
+      "missing_clarification": 7,
+      "specific_case_unresolved": 6,
+      "unsupported_capability": 4,
+      "emotion_underaddressed": 2,
+      "unnecessary_troubleshooting_burden": 1
+    },
+    "critical_fail_count": 0,
+    "worst_three": [
+      "case_19",
+      "case_08",
+      "case_12"
+    ]
+  },
+  "validation": {
+    "method": "人工参考仅用于三档排序与问题标签验证，未参与评分",
+    "sample_size": 20,
+    "tier_means": {
+      "middle": 69.97,
+      "negative": 59.41,
+      "positive": 63.69
+    },
+    "positive_negative_gap": 4.28,
+    "spearman_correlation": 0.3026,
+    "issue_tag_match_rate": 0.6364,
+    "issue_cases": 11,
+    "disagreements": [
+      {
+        "id": "case_09",
+        "human_tier": "positive",
+        "automatic_score": 62.75,
+        "reason": "人工档位与自动分数阈值不一致"
+      },
+      {
+        "id": "case_10",
+        "human_tier": "positive",
+        "automatic_score": 66.25,
+        "reason": "人工档位与自动分数阈值不一致"
+      },
+      {
+        "id": "case_14",
+        "human_tier": "positive",
+        "automatic_score": 65.0,
+        "reason": "人工档位与自动分数阈值不一致"
+      },
+      {
+        "id": "case_18",
+        "human_tier": "positive",
+        "automatic_score": 60.75,
+        "reason": "人工档位与自动分数阈值不一致"
+      }
+    ],
+    "rows": [
+      {
+        "id": "case_01",
+        "tier": "negative",
+        "tier_value": 1.0,
+        "matched_phrase": "把责任推给",
+        "score": 59.25,
+        "expected_issue_tags": [
+          "self_service_deflection",
+          "specific_case_unresolved"
+        ],
+        "matched_issue_tags": [
+          "self_service_deflection",
+          "specific_case_unresolved"
+        ]
+      },
+      {
+        "id": "case_02",
+        "tier": "negative",
+        "tier_value": 1.0,
+        "matched_phrase": "只是泛泛",
+        "score": 55.25,
+        "expected_issue_tags": [],
+        "matched_issue_tags": []
+      },
+      {
+        "id": "case_03",
+        "tier": "negative",
+        "tier_value": 1.0,
+        "matched_phrase": "没有帮用户",
+        "score": 62.75,
+        "expected_issue_tags": [],
+        "matched_issue_tags": []
+      },
+      {
+        "id": "case_04",
+        "tier": "negative",
+        "tier_value": 1.0,
+        "matched_phrase": "没有直接给出解决方案",
+        "score": 67.25,
+        "expected_issue_tags": [
+          "self_service_deflection",
+          "specific_case_unresolved"
+        ],
+        "matched_issue_tags": []
+      },
+      {
+        "id": "case_05",
+        "tier": "middle",
+        "tier_value": 2.0,
+        "matched_phrase": "未命中明确正向或严重负向短语",
+        "score": 84.25,
+        "expected_issue_tags": [],
+        "matched_issue_tags": []
+      },
+      {
+        "id": "case_06",
+        "tier": "negative",
+        "tier_value": 1.0,
+        "matched_phrase": "没有帮用户",
+        "score": 59.25,
+        "expected_issue_tags": [
+          "self_service_deflection",
+          "specific_case_unresolved"
+        ],
+        "matched_issue_tags": [
+          "self_service_deflection",
+          "specific_case_unresolved"
+        ]
+      },
+      {
+        "id": "case_07",
+        "tier": "middle",
+        "tier_value": 2.0,
+        "matched_phrase": "未命中明确正向或严重负向短语",
+        "score": 69.75,
+        "expected_issue_tags": [
+          "emotion_underaddressed"
+        ],
+        "matched_issue_tags": [
+          "emotion_underaddressed"
+        ]
+      },
+      {
+        "id": "case_08",
+        "tier": "negative",
+        "tier_value": 1.0,
+        "matched_phrase": "正确但没用",
+        "score": 51.75,
+        "expected_issue_tags": [],
+        "matched_issue_tags": []
+      },
+      {
+        "id": "case_09",
+        "tier": "positive",
+        "tier_value": 3.0,
+        "matched_phrase": "也有价值",
+        "score": 62.75,
+        "expected_issue_tags": [
+          "missing_clarification"
+        ],
+        "matched_issue_tags": []
+      },
+      {
+        "id": "case_10",
+        "tier": "positive",
+        "tier_value": 3.0,
+        "matched_phrase": "基本正确",
+        "score": 66.25,
+        "expected_issue_tags": [
+          "self_service_deflection",
+          "specific_case_unresolved"
+        ],
+        "matched_issue_tags": [
+          "self_service_deflection"
+        ]
+      },
+      {
+        "id": "case_11",
+        "tier": "middle",
+        "tier_value": 2.0,
+        "matched_phrase": "未命中明确正向或严重负向短语",
+        "score": 71.75,
+        "expected_issue_tags": [
+          "missing_clarification"
+        ],
+        "matched_issue_tags": []
+      },
+      {
+        "id": "case_12",
+        "tier": "negative",
+        "tier_value": 1.0,
+        "matched_phrase": "没有帮用户",
+        "score": 51.75,
+        "expected_issue_tags": [],
+        "matched_issue_tags": []
+      },
+      {
+        "id": "case_13",
+        "tier": "middle",
+        "tier_value": 2.0,
+        "matched_phrase": "未命中明确正向或严重负向短语",
+        "score": 55.25,
+        "expected_issue_tags": [
+          "self_service_deflection",
+          "specific_case_unresolved"
+        ],
+        "matched_issue_tags": [
+          "self_service_deflection",
+          "specific_case_unresolved"
+        ]
+      },
+      {
+        "id": "case_14",
+        "tier": "positive",
+        "tier_value": 3.0,
+        "matched_phrase": "处理得不错",
+        "score": 65.0,
+        "expected_issue_tags": [],
+        "matched_issue_tags": []
+      },
+      {
+        "id": "case_15",
+        "tier": "middle",
+        "tier_value": 2.0,
+        "matched_phrase": "未命中明确正向或严重负向短语",
+        "score": 64.5,
+        "expected_issue_tags": [
+          "emotion_underaddressed"
+        ],
+        "matched_issue_tags": []
+      },
+      {
+        "id": "case_16",
+        "tier": "middle",
+        "tier_value": 2.0,
+        "matched_phrase": "同时命中正向“基本合理”和负向“把用户推走”",
+        "score": 78.5,
+        "expected_issue_tags": [
+          "self_service_deflection",
+          "specific_case_unresolved",
+          "missing_clarification"
+        ],
+        "matched_issue_tags": [
+          "self_service_deflection"
+        ]
+      },
+      {
+        "id": "case_17",
+        "tier": "middle",
+        "tier_value": 2.0,
+        "matched_phrase": "未命中明确正向或严重负向短语",
+        "score": 88.5,
+        "expected_issue_tags": [
+          "self_service_deflection",
+          "specific_case_unresolved",
+          "multi_intent_missed"
+        ],
+        "matched_issue_tags": [
+          "self_service_deflection"
+        ]
+      },
+      {
+        "id": "case_18",
+        "tier": "positive",
+        "tier_value": 3.0,
+        "matched_phrase": "基本正确",
+        "score": 60.75,
+        "expected_issue_tags": [],
+        "matched_issue_tags": []
+      },
+      {
+        "id": "case_19",
+        "tier": "middle",
+        "tier_value": 2.0,
+        "matched_phrase": "未命中明确正向或严重负向短语",
+        "score": 47.25,
+        "expected_issue_tags": [],
+        "matched_issue_tags": []
+      },
+      {
+        "id": "case_20",
+        "tier": "negative",
+        "tier_value": 1.0,
+        "matched_phrase": "答非所问",
+        "score": 68.0,
+        "expected_issue_tags": [],
+        "matched_issue_tags": []
+      }
+    ]
+  },
+  "cases": [
+    {
+      "id": "case_01",
+      "metrics": {
+        "intent_accuracy": {
+          "score": 55.0,
+          "reason": "结合是否回应具体个案、必要追问和多意图覆盖评分。",
+          "evidence": [
+            "追问/具体个案信号: 我的",
+            "追问/具体个案信号: 取不出来"
+          ]
+        },
+        "usefulness": {
+          "score": 10.0,
+          "reason": "根据主动承接、可执行步骤与自助转移信号评分。",
+          "evidence": [
+            "主动/转移信号: 联系快递"
+          ]
+        },
+        "groundedness": {
+          "score": 100.0,
+          "reason": "未检测到需要外部证据的明确声明。",
+          "evidence": [
+            "未检测到相关文本信号"
+          ]
+        },
+        "tone": {
+          "score": 80.0,
+          "reason": "根据用户情绪强度与回复的共情匹配程度评分。",
+          "evidence": [
+            "未检测到相关文本信号"
+          ]
+        },
+        "clarity": {
+          "score": 90.0,
+          "reason": "根据长度、步骤结构和无关内部话术评分。",
+          "evidence": [
+            "回复长度: 82 字符"
+          ]
+        }
+      },
+      "overall_score": 59.25,
+      "risk_tags": [
+        "specific_case_unresolved",
+        "missing_clarification",
+        "self_service_deflection"
+      ],
+      "critical_fail": false,
+      "critical_reason": null,
+      "improvement": "主动追问订单、账号或商品信息，针对当前个案给出下一步。",
+      "evaluator": {
+        "mode": "mock",
+        "version": "mock-rubric-1.0"
+      },
+      "user_question": "我的快递到了但是放错快递柜了，取不出来",
+      "auto_reply": "您好，如果快递放错了快递柜，您可以尝试联系快递员重新派送，或者到放错的快递柜去取。建议您先查看取件码确认具体位置。如果无法解决，请联系我们的客服，我们会协助您处理。"
+    },
+    {
+      "id": "case_02",
+      "metrics": {
+        "intent_accuracy": {
+          "score": 75.0,
+          "reason": "结合是否回应具体个案、必要追问和多意图覆盖评分。",
+          "evidence": [
+            "追问/具体个案信号: 这个"
+          ]
+        },
+        "usefulness": {
+          "score": 30.0,
+          "reason": "根据主动承接、可执行步骤与自助转移信号评分。",
+          "evidence": [
+            "主动/转移信号: 咨询具体航空公司"
+          ]
+        },
+        "groundedness": {
+          "score": 50.0,
+          "reason": "检测到缺少当前输入证据、待核实的外部声明。",
+          "evidence": [
+            "待核实声明: 不超过100Wh",
+            "待核实声明: 根据民航局规定"
+          ]
+        },
+        "tone": {
+          "score": 80.0,
+          "reason": "根据用户情绪强度与回复的共情匹配程度评分。",
+          "evidence": [
+            "未检测到相关文本信号"
+          ]
+        },
+        "clarity": {
+          "score": 90.0,
+          "reason": "根据长度、步骤结构和无关内部话术评分。",
+          "evidence": [
+            "回复长度: 87 字符"
+          ]
+        }
+      },
+      "overall_score": 55.25,
+      "risk_tags": [
+        "self_service_deflection",
+        "unsupported_claim"
+      ],
+      "critical_fail": false,
+      "critical_reason": null,
+      "improvement": "对时效、政策或商品参数提供可追溯依据，无法确认时明确说明待核实。",
+      "evaluator": {
+        "mode": "mock",
+        "version": "mock-rubric-1.0"
+      },
+      "user_question": "这个充电宝能带上飞机吗",
+      "auto_reply": "您好，关于充电宝是否能带上飞机，根据民航局规定，额定能量不超过100Wh的充电宝可以随身携带上飞机，但不能托运。建议您查看充电宝的额定容量标识。如有疑问，请咨询具体航空公司。"
+    },
+    {
+      "id": "case_03",
+      "metrics": {
+        "intent_accuracy": {
+          "score": 75.0,
+          "reason": "结合是否回应具体个案、必要追问和多意图覆盖评分。",
+          "evidence": [
+            "未检测到相关文本信号"
+          ]
+        },
+        "usefulness": {
+          "score": 30.0,
+          "reason": "根据主动承接、可执行步骤与自助转移信号评分。",
+          "evidence": [
+            "主动/转移信号: 查看退款进度",
+            "主动/转移信号: 联系客服"
+          ]
+        },
+        "groundedness": {
+          "score": 75.0,
+          "reason": "检测到缺少当前输入证据、待核实的外部声明。",
+          "evidence": [
+            "待核实声明: 1-3个工作日"
+          ]
+        },
+        "tone": {
+          "score": 80.0,
+          "reason": "根据用户情绪强度与回复的共情匹配程度评分。",
+          "evidence": [
+            "未检测到相关文本信号"
+          ]
+        },
+        "clarity": {
+          "score": 90.0,
+          "reason": "根据长度、步骤结构和无关内部话术评分。",
+          "evidence": [
+            "回复长度: 104 字符"
+          ]
+        }
+      },
+      "overall_score": 62.75,
+      "risk_tags": [
+        "self_service_deflection",
+        "unsupported_claim"
+      ],
+      "critical_fail": false,
+      "critical_reason": null,
+      "improvement": "对时效、政策或商品参数提供可追溯依据，无法确认时明确说明待核实。",
+      "evaluator": {
+        "mode": "mock",
+        "version": "mock-rubric-1.0"
+      },
+      "user_question": "退款什么时候能到账",
+      "auto_reply": "退款到账时间取决于退款方式和银行处理速度。一般情况下：原路退回（支付宝/微信）1-3个工作日，银行卡退款3-7个工作日，信用卡退款5-15个工作日。您可以在订单详情页查看退款进度。如果超时未到账，请联系客服。"
+    },
+    {
+      "id": "case_04",
+      "metrics": {
+        "intent_accuracy": {
+          "score": 65.0,
+          "reason": "结合是否回应具体个案、必要追问和多意图覆盖评分。",
+          "evidence": [
+            "追问/具体个案信号: 我买的",
+            "追问/具体个案信号: 才买",
+            "追问/具体个案信号: 没声音"
+          ]
+        },
+        "usefulness": {
+          "score": 45.0,
+          "reason": "根据主动承接、可执行步骤与自助转移信号评分。",
+          "evidence": [
+            "主动/转移信号: 申请退货",
+            "主动/转移信号: 退货退款",
+            "主动/转移信号: 换新"
+          ]
+        },
+        "groundedness": {
+          "score": 75.0,
+          "reason": "检测到缺少当前输入证据、待核实的外部声明。",
+          "evidence": [
+            "待核实声明: 7天质保"
+          ]
+        },
+        "tone": {
+          "score": 100.0,
+          "reason": "根据用户情绪强度与回复的共情匹配程度评分。",
+          "evidence": [
+            "情绪/共情信号: 抱歉",
+            "情绪/共情信号: 给您带来"
+          ]
+        },
+        "clarity": {
+          "score": 100.0,
+          "reason": "根据长度、步骤结构和无关内部话术评分。",
+          "evidence": [
+            "回复长度: 109 字符"
+          ]
+        }
+      },
+      "overall_score": 67.25,
+      "risk_tags": [
+        "unnecessary_troubleshooting_burden",
+        "unsupported_claim"
+      ],
+      "critical_fail": false,
+      "critical_reason": null,
+      "improvement": "对时效、政策或商品参数提供可追溯依据，无法确认时明确说明待核实。",
+      "evaluator": {
+        "mode": "mock",
+        "version": "mock-rubric-1.0"
+      },
+      "user_question": "我买的蓝牙耳机左耳没声音了，才买三天",
+      "auto_reply": "抱歉给您带来不便。蓝牙耳机出现单侧无声的情况，建议您尝试以下操作：1.将耳机放回充电盒重新配对 2.检查手机蓝牙设置中是否有单声道选项 3.尝试重启耳机。如果问题仍然存在，由于在7天质保期内，您可以申请退货退款或换新。"
+    },
+    {
+      "id": "case_05",
+      "metrics": {
+        "intent_accuracy": {
+          "score": 90.0,
+          "reason": "结合是否回应具体个案、必要追问和多意图覆盖评分。",
+          "evidence": [
+            "追问/具体个案信号: 请问"
+          ]
+        },
+        "usefulness": {
+          "score": 75.0,
+          "reason": "根据主动承接、可执行步骤与自助转移信号评分。",
+          "evidence": [
+            "未检测到相关文本信号"
+          ]
+        },
+        "groundedness": {
+          "score": 85.0,
+          "reason": "检测到缺少当前输入证据、待核实的外部声明。",
+          "evidence": [
+            "待核实声明: 我们会加强"
+          ]
+        },
+        "tone": {
+          "score": 100.0,
+          "reason": "根据用户情绪强度与回复的共情匹配程度评分。",
+          "evidence": [
+            "情绪/共情信号: 态度太差",
+            "情绪/共情信号: 没人理",
+            "情绪/共情信号: 抱歉"
+          ]
+        },
+        "clarity": {
+          "score": 75.0,
+          "reason": "根据长度、步骤结构和无关内部话术评分。",
+          "evidence": [
+            "回复长度: 82 字符"
+          ]
+        }
+      },
+      "overall_score": 84.25,
+      "risk_tags": [
+        "unsupported_capability"
+      ],
+      "critical_fail": false,
+      "critical_reason": null,
+      "improvement": "保留直接答案，并补充更具体的下一步。",
+      "evaluator": {
+        "mode": "mock",
+        "version": "mock-rubric-1.0"
+      },
+      "user_question": "你们客服态度太差了等了20分钟都没人理我",
+      "auto_reply": "非常抱歉让您久等了，给您带来了不好的体验。我们非常重视每一位客户的感受。请问您遇到了什么问题？我现在就帮您处理。同时我们会加强客服团队的培训，避免类似情况再次发生。"
+    },
+    {
+      "id": "case_06",
+      "metrics": {
+        "intent_accuracy": {
+          "score": 55.0,
+          "reason": "结合是否回应具体个案、必要追问和多意图覆盖评分。",
+          "evidence": [
+            "追问/具体个案信号: 用不了"
+          ]
+        },
+        "usefulness": {
+          "score": 10.0,
+          "reason": "根据主动承接、可执行步骤与自助转移信号评分。",
+          "evidence": [
+            "主动/转移信号: 联系客服"
+          ]
+        },
+        "groundedness": {
+          "score": 100.0,
+          "reason": "未检测到需要外部证据的明确声明。",
+          "evidence": [
+            "未检测到相关文本信号"
+          ]
+        },
+        "tone": {
+          "score": 80.0,
+          "reason": "根据用户情绪强度与回复的共情匹配程度评分。",
+          "evidence": [
+            "未检测到相关文本信号"
+          ]
+        },
+        "clarity": {
+          "score": 90.0,
+          "reason": "根据长度、步骤结构和无关内部话术评分。",
+          "evidence": [
+            "回复长度: 101 字符"
+          ]
+        }
+      },
+      "overall_score": 59.25,
+      "risk_tags": [
+        "specific_case_unresolved",
+        "missing_clarification",
+        "self_service_deflection"
+      ],
+      "critical_fail": false,
+      "critical_reason": null,
+      "improvement": "主动追问订单、账号或商品信息，针对当前个案给出下一步。",
+      "evaluator": {
+        "mode": "mock",
+        "version": "mock-rubric-1.0"
+      },
+      "user_question": "优惠券怎么用不了",
+      "auto_reply": "您好，优惠券无法使用可能有以下原因：1.未达到使用门槛金额 2.商品不在优惠券适用范围内 3.优惠券已过期 4.优惠券已使用过。请您检查优惠券的使用规则。如果确认符合使用条件仍无法使用，请联系客服核实。"
+    },
+    {
+      "id": "case_07",
+      "metrics": {
+        "intent_accuracy": {
+          "score": 75.0,
+          "reason": "结合是否回应具体个案、必要追问和多意图覆盖评分。",
+          "evidence": [
+            "追问/具体个案信号: 收到"
+          ]
+        },
+        "usefulness": {
+          "score": 40.0,
+          "reason": "根据主动承接、可执行步骤与自助转移信号评分。",
+          "evidence": [
+            "主动/转移信号: 不要点击",
+            "主动/转移信号: 修改密码",
+            "主动/转移信号: 开启二次验证"
+          ]
+        },
+        "groundedness": {
+          "score": 100.0,
+          "reason": "未检测到需要外部证据的明确声明。",
+          "evidence": [
+            "未检测到相关文本信号"
+          ]
+        },
+        "tone": {
+          "score": 40.0,
+          "reason": "根据用户情绪强度与回复的共情匹配程度评分。",
+          "evidence": [
+            "情绪/共情信号: 异地登录"
+          ]
+        },
+        "clarity": {
+          "score": 100.0,
+          "reason": "根据长度、步骤结构和无关内部话术评分。",
+          "evidence": [
+            "回复长度: 109 字符"
+          ]
+        }
+      },
+      "overall_score": 69.75,
+      "risk_tags": [
+        "self_service_deflection",
+        "emotion_underaddressed"
+      ],
+      "critical_fail": false,
+      "critical_reason": null,
+      "improvement": "先承接用户的担忧或不满，再给出具体处理步骤。",
+      "evaluator": {
+        "mode": "mock",
+        "version": "mock-rubric-1.0"
+      },
+      "user_question": "我收到短信说账号异地登录了是真的吗",
+      "auto_reply": "您好，异地登录提醒可能是真实的也可能是诈骗短信。请您先不要点击短信中的任何链接。建议您：1.直接登录我们的官方网站或APP查看登录记录 2.修改密码 3.开启二次验证功能。如果确认存在异常登录，请立即联系客服冻结账号。"
+    },
+    {
+      "id": "case_08",
+      "metrics": {
+        "intent_accuracy": {
+          "score": 55.0,
+          "reason": "结合是否回应具体个案、必要追问和多意图覆盖评分。",
+          "evidence": [
+            "追问/具体个案信号: 这个"
+          ]
+        },
+        "usefulness": {
+          "score": 10.0,
+          "reason": "根据主动承接、可执行步骤与自助转移信号评分。",
+          "evidence": [
+            "主动/转移信号: 查看商品详情页的参数",
+            "主动/转移信号: 联系客服"
+          ]
+        },
+        "groundedness": {
+          "score": 75.0,
+          "reason": "检测到缺少当前输入证据、待核实的外部声明。",
+          "evidence": [
+            "待核实声明: 采用的是TPU软胶材质"
+          ]
+        },
+        "tone": {
+          "score": 80.0,
+          "reason": "根据用户情绪强度与回复的共情匹配程度评分。",
+          "evidence": [
+            "未检测到相关文本信号"
+          ]
+        },
+        "clarity": {
+          "score": 90.0,
+          "reason": "根据长度、步骤结构和无关内部话术评分。",
+          "evidence": [
+            "回复长度: 70 字符"
+          ]
+        }
+      },
+      "overall_score": 51.75,
+      "risk_tags": [
+        "specific_case_unresolved",
+        "missing_clarification",
+        "self_service_deflection",
+        "unsupported_claim"
+      ],
+      "critical_fail": false,
+      "critical_reason": null,
+      "improvement": "主动追问订单、账号或商品信息，针对当前个案给出下一步。",
+      "evaluator": {
+        "mode": "mock",
+        "version": "mock-rubric-1.0"
+      },
+      "user_question": "这个手机壳是硅胶的还是塑料的",
+      "auto_reply": "您好，这款手机壳采用的是TPU软胶材质，具有较好的防摔性能和手感。如果您需要更具体的材质信息，可以查看商品详情页的参数说明，或联系客服获取。"
+    },
+    {
+      "id": "case_09",
+      "metrics": {
+        "intent_accuracy": {
+          "score": 75.0,
+          "reason": "结合是否回应具体个案、必要追问和多意图覆盖评分。",
+          "evidence": [
+            "未检测到相关文本信号"
+          ]
+        },
+        "usefulness": {
+          "score": 30.0,
+          "reason": "根据主动承接、可执行步骤与自助转移信号评分。",
+          "evidence": [
+            "主动/转移信号: 联系客服"
+          ]
+        },
+        "groundedness": {
+          "score": 75.0,
+          "reason": "检测到缺少当前输入证据、待核实的外部声明。",
+          "evidence": [
+            "待核实声明: 运费由商家承担"
+          ]
+        },
+        "tone": {
+          "score": 80.0,
+          "reason": "根据用户情绪强度与回复的共情匹配程度评分。",
+          "evidence": [
+            "未检测到相关文本信号"
+          ]
+        },
+        "clarity": {
+          "score": 90.0,
+          "reason": "根据长度、步骤结构和无关内部话术评分。",
+          "evidence": [
+            "回复长度: 85 字符"
+          ]
+        }
+      },
+      "overall_score": 62.75,
+      "risk_tags": [
+        "self_service_deflection",
+        "unsupported_claim"
+      ],
+      "critical_fail": false,
+      "critical_reason": null,
+      "improvement": "对时效、政策或商品参数提供可追溯依据，无法确认时明确说明待核实。",
+      "evaluator": {
+        "mode": "mock",
+        "version": "mock-rubric-1.0"
+      },
+      "user_question": "退货邮费谁出",
+      "auto_reply": "退货运费承担规则如下：质量问题导致的退货，运费由商家承担；非质量问题（如不喜欢、买错了等）的退货，运费由买家承担。具体判定标准请参考我们的退换货政策。如有疑问请联系客服。"
+    },
+    {
+      "id": "case_10",
+      "metrics": {
+        "intent_accuracy": {
+          "score": 75.0,
+          "reason": "结合是否回应具体个案、必要追问和多意图覆盖评分。",
+          "evidence": [
+            "追问/具体个案信号: 刚下单"
+          ]
+        },
+        "usefulness": {
+          "score": 40.0,
+          "reason": "根据主动承接、可执行步骤与自助转移信号评分。",
+          "evidence": [
+            "主动/转移信号: 在订单详情页操作",
+            "主动/转移信号: 联系客服"
+          ]
+        },
+        "groundedness": {
+          "score": 75.0,
+          "reason": "检测到缺少当前输入证据、待核实的外部声明。",
+          "evidence": [
+            "待核实声明: 1-3个工作日"
+          ]
+        },
+        "tone": {
+          "score": 80.0,
+          "reason": "根据用户情绪强度与回复的共情匹配程度评分。",
+          "evidence": [
+            "未检测到相关文本信号"
+          ]
+        },
+        "clarity": {
+          "score": 100.0,
+          "reason": "根据长度、步骤结构和无关内部话术评分。",
+          "evidence": [
+            "回复长度: 59 字符"
+          ]
+        }
+      },
+      "overall_score": 66.25,
+      "risk_tags": [
+        "self_service_deflection",
+        "unsupported_claim"
+      ],
+      "critical_fail": false,
+      "critical_reason": null,
+      "improvement": "对时效、政策或商品参数提供可追溯依据，无法确认时明确说明待核实。",
+      "evaluator": {
+        "mode": "mock",
+        "version": "mock-rubric-1.0"
+      },
+      "user_question": "刚下单还没发货能取消吗",
+      "auto_reply": "您好，订单未发货前可以申请取消。请您在订单详情页操作，或联系客服协助处理。取消后款项会在1-3个工作日退回原支付方式。"
+    },
+    {
+      "id": "case_11",
+      "metrics": {
+        "intent_accuracy": {
+          "score": 75.0,
+          "reason": "结合是否回应具体个案、必要追问和多意图覆盖评分。",
+          "evidence": [
+            "未检测到相关文本信号"
+          ]
+        },
+        "usefulness": {
+          "score": 60.0,
+          "reason": "根据主动承接、可执行步骤与自助转移信号评分。",
+          "evidence": [
+            "未检测到相关文本信号"
+          ]
+        },
+        "groundedness": {
+          "score": 75.0,
+          "reason": "检测到缺少当前输入证据、待核实的外部声明。",
+          "evidence": [
+            "待核实声明: 运费由买家承担"
+          ]
+        },
+        "tone": {
+          "score": 80.0,
+          "reason": "根据用户情绪强度与回复的共情匹配程度评分。",
+          "evidence": [
+            "未检测到相关文本信号"
+          ]
+        },
+        "clarity": {
+          "score": 90.0,
+          "reason": "根据长度、步骤结构和无关内部话术评分。",
+          "evidence": [
+            "回复长度: 74 字符"
+          ]
+        }
+      },
+      "overall_score": 71.75,
+      "risk_tags": [
+        "unsupported_claim"
+      ],
+      "critical_fail": false,
+      "critical_reason": null,
+      "improvement": "对时效、政策或商品参数提供可追溯依据，无法确认时明确说明待核实。",
+      "evaluator": {
+        "mode": "mock",
+        "version": "mock-rubric-1.0"
+      },
+      "user_question": "买了两件衣服一件大了一件小了想换尺码",
+      "auto_reply": "您好，换货需要先退货再重新下单选择正确尺码。请分别发起两件商品的换货申请，按照退货地址寄回原商品，我们收到后会发出新尺码的商品。换货运费由买家承担。"
+    },
+    {
+      "id": "case_12",
+      "metrics": {
+        "intent_accuracy": {
+          "score": 55.0,
+          "reason": "结合是否回应具体个案、必要追问和多意图覆盖评分。",
+          "evidence": [
+            "追问/具体个案信号: 没更新"
+          ]
+        },
+        "usefulness": {
+          "score": 10.0,
+          "reason": "根据主动承接、可执行步骤与自助转移信号评分。",
+          "evidence": [
+            "主动/转移信号: 联系快递",
+            "主动/转移信号: 耐心等待"
+          ]
+        },
+        "groundedness": {
+          "score": 75.0,
+          "reason": "检测到缺少当前输入证据、待核实的外部声明。",
+          "evidence": [
+            "待核实声明: 1-2天"
+          ]
+        },
+        "tone": {
+          "score": 80.0,
+          "reason": "根据用户情绪强度与回复的共情匹配程度评分。",
+          "evidence": [
+            "未检测到相关文本信号"
+          ]
+        },
+        "clarity": {
+          "score": 90.0,
+          "reason": "根据长度、步骤结构和无关内部话术评分。",
+          "evidence": [
+            "回复长度: 94 字符"
+          ]
+        }
+      },
+      "overall_score": 51.75,
+      "risk_tags": [
+        "specific_case_unresolved",
+        "missing_clarification",
+        "self_service_deflection",
+        "unsupported_claim"
+      ],
+      "critical_fail": false,
+      "critical_reason": null,
+      "improvement": "主动追问订单、账号或商品信息，针对当前个案给出下一步。",
+      "evaluator": {
+        "mode": "mock",
+        "version": "mock-rubric-1.0"
+      },
+      "user_question": "快递两天没更新了",
+      "auto_reply": "物流信息长时间未更新可能是以下原因：1.包裹正在中转途中 2.快递公司信息更新延迟 3.包裹可能出现问题。建议您耐心等待1-2天，如果仍未更新，请联系快递公司查询或联系我们的客服协助跟进。"
+    },
+    {
+      "id": "case_13",
+      "metrics": {
+        "intent_accuracy": {
+          "score": 55.0,
+          "reason": "结合是否回应具体个案、必要追问和多意图覆盖评分。",
+          "evidence": [
+            "追问/具体个案信号: 我买的"
+          ]
+        },
+        "usefulness": {
+          "score": 10.0,
+          "reason": "根据主动承接、可执行步骤与自助转移信号评分。",
+          "evidence": [
+            "主动/转移信号: 联系品牌"
+          ]
+        },
+        "groundedness": {
+          "score": 100.0,
+          "reason": "未检测到需要外部证据的明确声明。",
+          "evidence": [
+            "未检测到相关文本信号"
+          ]
+        },
+        "tone": {
+          "score": 40.0,
+          "reason": "根据用户情绪强度与回复的共情匹配程度评分。",
+          "evidence": [
+            "情绪/共情信号: 皮肤敏感"
+          ]
+        },
+        "clarity": {
+          "score": 90.0,
+          "reason": "根据长度、步骤结构和无关内部话术评分。",
+          "evidence": [
+            "回复长度: 81 字符"
+          ]
+        }
+      },
+      "overall_score": 55.25,
+      "risk_tags": [
+        "specific_case_unresolved",
+        "missing_clarification",
+        "self_service_deflection",
+        "emotion_underaddressed"
+      ],
+      "critical_fail": false,
+      "critical_reason": null,
+      "improvement": "主动追问订单、账号或商品信息，针对当前个案给出下一步。",
+      "evaluator": {
+        "mode": "mock",
+        "version": "mock-rubric-1.0"
+      },
+      "user_question": "我买的面膜成分表能发给我看看吗我皮肤敏感",
+      "auto_reply": "您好，面膜的成分表可以在商品详情页查看。如果您对特定成分过敏，建议您在购买前仔细核对成分表，或先购买小样进行皮肤测试。如需更详细的成分信息，可以联系品牌官方客服。"
+    },
+    {
+      "id": "case_14",
+      "metrics": {
+        "intent_accuracy": {
+          "score": 75.0,
+          "reason": "结合是否回应具体个案、必要追问和多意图覆盖评分。",
+          "evidence": [
+            "未检测到相关文本信号"
+          ]
+        },
+        "usefulness": {
+          "score": 30.0,
+          "reason": "根据主动承接、可执行步骤与自助转移信号评分。",
+          "evidence": [
+            "主动/转移信号: 联系客服"
+          ]
+        },
+        "groundedness": {
+          "score": 85.0,
+          "reason": "检测到缺少当前输入证据、待核实的外部声明。",
+          "evidence": [
+            "待核实声明: 我们会将您的反馈转达",
+            "待核实声明: 我们会将您的反馈"
+          ]
+        },
+        "tone": {
+          "score": 80.0,
+          "reason": "根据用户情绪强度与回复的共情匹配程度评分。",
+          "evidence": [
+            "未检测到相关文本信号"
+          ]
+        },
+        "clarity": {
+          "score": 75.0,
+          "reason": "根据长度、步骤结构和无关内部话术评分。",
+          "evidence": [
+            "回复长度: 87 字符"
+          ]
+        }
+      },
+      "overall_score": 65.0,
+      "risk_tags": [
+        "self_service_deflection",
+        "unsupported_capability"
+      ],
+      "critical_fail": false,
+      "critical_reason": null,
+      "improvement": "保留直接答案，并补充更具体的下一步。",
+      "evaluator": {
+        "mode": "mock",
+        "version": "mock-rubric-1.0"
+      },
+      "user_question": "你们能不能加个功能下单前能看实物视频",
+      "auto_reply": "感谢您的宝贵建议！我们会将您的反馈转达给产品团队。目前部分商品已支持视频展示，您可以在商品详情页查看是否有视频标识。如果您有特定商品需要看实物，可以联系客服，我们会尽力协助。"
+    },
+    {
+      "id": "case_15",
+      "metrics": {
+        "intent_accuracy": {
+          "score": 75.0,
+          "reason": "结合是否回应具体个案、必要追问和多意图覆盖评分。",
+          "evidence": [
+            "追问/具体个案信号: 我上次",
+            "追问/具体个案信号: 收到",
+            "追问/具体个案信号: 是坏的"
+          ]
+        },
+        "usefulness": {
+          "score": 70.0,
+          "reason": "根据主动承接、可执行步骤与自助转移信号评分。",
+          "evidence": [
+            "主动/转移信号: 申请退货",
+            "主动/转移信号: 退货退款"
+          ]
+        },
+        "groundedness": {
+          "score": 35.0,
+          "reason": "检测到缺少当前输入证据、待核实的外部声明。",
+          "evidence": [
+            "待核实声明: 运费由我们承担",
+            "待核实声明: 可以申请额外的补偿优惠券",
+            "待核实声明: 我们会将您的情况反馈"
+          ]
+        },
+        "tone": {
+          "score": 100.0,
+          "reason": "根据用户情绪强度与回复的共情匹配程度评分。",
+          "evidence": [
+            "情绪/共情信号: 又是坏",
+            "情绪/共情信号: 抱歉",
+            "情绪/共情信号: 给您带来"
+          ]
+        },
+        "clarity": {
+          "score": 85.0,
+          "reason": "根据长度、步骤结构和无关内部话术评分。",
+          "evidence": [
+            "回复长度: 98 字符"
+          ]
+        }
+      },
+      "overall_score": 64.5,
+      "risk_tags": [
+        "unsupported_claim",
+        "unsupported_capability"
+      ],
+      "critical_fail": false,
+      "critical_reason": null,
+      "improvement": "对时效、政策或商品参数提供可追溯依据，无法确认时明确说明待核实。",
+      "evaluator": {
+        "mode": "mock",
+        "version": "mock-rubric-1.0"
+      },
+      "user_question": "我上次买的东西收到是坏的这次又是坏的",
+      "auto_reply": "非常抱歉连续给您带来不好的体验。我们高度重视商品质量问题。请您先申请退货退款，退货运费由我们承担。同时我们会将您的情况反馈给品控部门，加强对该类商品的质量检查。如有需要，可以申请额外的补偿优惠券。"
+    },
+    {
+      "id": "case_16",
+      "metrics": {
+        "intent_accuracy": {
+          "score": 90.0,
+          "reason": "结合是否回应具体个案、必要追问和多意图覆盖评分。",
+          "evidence": [
+            "追问/具体个案信号: 告诉我具体的使用场景和预算"
+          ]
+        },
+        "usefulness": {
+          "score": 45.0,
+          "reason": "根据主动承接、可执行步骤与自助转移信号评分。",
+          "evidence": [
+            "主动/转移信号: 查看商品详情页的用户评价和参数"
+          ]
+        },
+        "groundedness": {
+          "score": 100.0,
+          "reason": "未检测到需要外部证据的明确声明。",
+          "evidence": [
+            "未检测到相关文本信号"
+          ]
+        },
+        "tone": {
+          "score": 80.0,
+          "reason": "根据用户情绪强度与回复的共情匹配程度评分。",
+          "evidence": [
+            "未检测到相关文本信号"
+          ]
+        },
+        "clarity": {
+          "score": 90.0,
+          "reason": "根据长度、步骤结构和无关内部话术评分。",
+          "evidence": [
+            "回复长度: 79 字符"
+          ]
+        }
+      },
+      "overall_score": 78.5,
+      "risk_tags": [
+        "self_service_deflection"
+      ],
+      "critical_fail": false,
+      "critical_reason": null,
+      "improvement": "保留直接答案，并补充更具体的下一步。",
+      "evaluator": {
+        "mode": "mock",
+        "version": "mock-rubric-1.0"
+      },
+      "user_question": "你们首页推荐的那两款手机哪个好",
+      "auto_reply": "您好，不同手机各有优势，适合的需求也不同。如果您能告诉我具体的使用场景和预算，我可以帮您推荐更合适的选择。您也可以查看商品详情页的用户评价和参数对比来做决策。"
+    },
+    {
+      "id": "case_17",
+      "metrics": {
+        "intent_accuracy": {
+          "score": 100.0,
+          "reason": "结合是否回应具体个案、必要追问和多意图覆盖评分。",
+          "evidence": [
+            "追问/具体个案信号: 提供具体的订单号"
+          ]
+        },
+        "usefulness": {
+          "score": 70.0,
+          "reason": "根据主动承接、可执行步骤与自助转移信号评分。",
+          "evidence": [
+            "主动/转移信号: 帮您查",
+            "主动/转移信号: 查看 2.快递进度可以在物流追踪页面"
+          ]
+        },
+        "groundedness": {
+          "score": 100.0,
+          "reason": "未检测到需要外部证据的明确声明。",
+          "evidence": [
+            "未检测到相关文本信号"
+          ]
+        },
+        "tone": {
+          "score": 80.0,
+          "reason": "根据用户情绪强度与回复的共情匹配程度评分。",
+          "evidence": [
+            "未检测到相关文本信号"
+          ]
+        },
+        "clarity": {
+          "score": 90.0,
+          "reason": "根据长度、步骤结构和无关内部话术评分。",
+          "evidence": [
+            "回复长度: 73 字符"
+          ]
+        }
+      },
+      "overall_score": 88.5,
+      "risk_tags": [
+        "self_service_deflection"
+      ],
+      "critical_fail": false,
+      "critical_reason": null,
+      "improvement": "保留直接答案，并补充更具体的下一步。",
+      "evaluator": {
+        "mode": "mock",
+        "version": "mock-rubric-1.0"
+      },
+      "user_question": "我那个退货的事顺便看看快递到没到",
+      "auto_reply": "您好，关于您的两个问题：1.退货进度请在订单详情页查看 2.快递进度可以在物流追踪页面查看。如果您能提供具体的订单号，我可以帮您查询更详细的信息。"
+    },
+    {
+      "id": "case_18",
+      "metrics": {
+        "intent_accuracy": {
+          "score": 75.0,
+          "reason": "结合是否回应具体个案、必要追问和多意图覆盖评分。",
+          "evidence": [
+            "追问/具体个案信号: 那个",
+            "追问/具体个案信号: 用了两周就不工作了",
+            "追问/具体个案信号: 不工作"
+          ]
+        },
+        "usefulness": {
+          "score": 40.0,
+          "reason": "根据主动承接、可执行步骤与自助转移信号评分。",
+          "evidence": [
+            "主动/转移信号: 退货退款",
+            "主动/转移信号: 换新",
+            "主动/转移信号: 联系客服"
+          ]
+        },
+        "groundedness": {
+          "score": 50.0,
+          "reason": "检测到缺少当前输入证据、待核实的外部声明。",
+          "evidence": [
+            "待核实声明: 30天质保",
+            "待核实声明: 运费由我们承担",
+            "待核实声明: 属于质量问题"
+          ]
+        },
+        "tone": {
+          "score": 100.0,
+          "reason": "根据用户情绪强度与回复的共情匹配程度评分。",
+          "evidence": [
+            "情绪/共情信号: 抱歉",
+            "情绪/共情信号: 给您带来"
+          ]
+        },
+        "clarity": {
+          "score": 100.0,
+          "reason": "根据长度、步骤结构和无关内部话术评分。",
+          "evidence": [
+            "回复长度: 91 字符"
+          ]
+        }
+      },
+      "overall_score": 60.75,
+      "risk_tags": [
+        "self_service_deflection",
+        "unsupported_claim"
+      ],
+      "critical_fail": false,
+      "critical_reason": null,
+      "improvement": "对时效、政策或商品参数提供可追溯依据，无法确认时明确说明待核实。",
+      "evaluator": {
+        "mode": "mock",
+        "version": "mock-rubric-1.0"
+      },
+      "user_question": "那个扫地机器人用了两周就不工作了",
+      "auto_reply": "抱歉给您带来不便。扫地机器人使用两周就出现故障，属于质量问题。您的订单在30天质保期内，可以选择退货退款或者换新。请按照退货地址寄回商品，退货运费由我们承担。如有其他问题请联系客服。"
+    },
+    {
+      "id": "case_19",
+      "metrics": {
+        "intent_accuracy": {
+          "score": 55.0,
+          "reason": "结合是否回应具体个案、必要追问和多意图覆盖评分。",
+          "evidence": [
+            "追问/具体个案信号: 那个"
+          ]
+        },
+        "usefulness": {
+          "score": 10.0,
+          "reason": "根据主动承接、可执行步骤与自助转移信号评分。",
+          "evidence": [
+            "主动/转移信号: 联系客服"
+          ]
+        },
+        "groundedness": {
+          "score": 60.0,
+          "reason": "检测到缺少当前输入证据、待核实的外部声明。",
+          "evidence": [
+            "待核实声明: 系统会自动提醒",
+            "待核实声明: 系统会自动提醒"
+          ]
+        },
+        "tone": {
+          "score": 80.0,
+          "reason": "根据用户情绪强度与回复的共情匹配程度评分。",
+          "evidence": [
+            "未检测到相关文本信号"
+          ]
+        },
+        "clarity": {
+          "score": 90.0,
+          "reason": "根据长度、步骤结构和无关内部话术评分。",
+          "evidence": [
+            "回复长度: 84 字符"
+          ]
+        }
+      },
+      "overall_score": 47.25,
+      "risk_tags": [
+        "specific_case_unresolved",
+        "missing_clarification",
+        "self_service_deflection",
+        "unsupported_claim",
+        "unsupported_capability"
+      ],
+      "critical_fail": false,
+      "critical_reason": null,
+      "improvement": "主动追问订单、账号或商品信息，针对当前个案给出下一步。",
+      "evaluator": {
+        "mode": "mock",
+        "version": "mock-rubric-1.0"
+      },
+      "user_question": "我要买的那个包什么时候补货",
+      "auto_reply": "您好，商品补货时间不固定，建议您关注商品页面或联系客服询问预计到货时间。您也可以将商品加入购物车，补货时系统会自动提醒您。如果长时间未补货，可以考虑查看类似的替代商品。"
+    },
+    {
+      "id": "case_20",
+      "metrics": {
+        "intent_accuracy": {
+          "score": 50.0,
+          "reason": "结合是否回应具体个案、必要追问和多意图覆盖评分。",
+          "evidence": [
+            "未检测到相关文本信号"
+          ]
+        },
+        "usefulness": {
+          "score": 35.0,
+          "reason": "根据主动承接、可执行步骤与自助转移信号评分。",
+          "evidence": [
+            "主动/转移信号: 在订单页面点击退货 2.选择退货原因 3.提交"
+          ]
+        },
+        "groundedness": {
+          "score": 100.0,
+          "reason": "未检测到需要外部证据的明确声明。",
+          "evidence": [
+            "未检测到相关文本信号"
+          ]
+        },
+        "tone": {
+          "score": 100.0,
+          "reason": "根据用户情绪强度与回复的共情匹配程度评分。",
+          "evidence": [
+            "情绪/共情信号: 太复杂",
+            "情绪/共情信号: 搞半天",
+            "情绪/共情信号: 不知道怎么"
+          ]
+        },
+        "clarity": {
+          "score": 100.0,
+          "reason": "根据长度、步骤结构和无关内部话术评分。",
+          "evidence": [
+            "回复长度: 94 字符"
+          ]
+        }
+      },
+      "overall_score": 68.0,
+      "risk_tags": [
+        "missing_clarification"
+      ],
+      "critical_fail": false,
+      "critical_reason": null,
+      "improvement": "保留直接答案，并补充更具体的下一步。",
+      "evaluator": {
+        "mode": "mock",
+        "version": "mock-rubric-1.0"
+      },
+      "user_question": "退货流程太复杂了搞半天都不知道怎么操作",
+      "auto_reply": "抱歉给您带来困扰。退货流程一般包括：1.在订单页面点击退货 2.选择退货原因 3.提交申请等待审核 4.按照退货地址寄回商品。如果您在某个环节遇到问题，可以截图发给客服，我们会协助您操作。"
+    }
+  ]
+}

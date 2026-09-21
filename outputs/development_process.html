@@ -1,0 +1,47 @@
+<!doctype html><meta charset=utf-8><title>Development verification</title><style>body{margin:0;background:#08111f;color:#dce7f7;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.top{padding:18px 28px;background:#111d30;border-bottom:1px solid #263650;display:flex;justify-content:space-between}.top b{color:#72e1b7}.top span{color:#8495ad}.wrap{padding:24px 28px}.cmd{color:#78a9ff;margin-bottom:14px}.ok{color:#72e1b7}pre{font-size:12px;line-height:1.42;white-space:pre-wrap;margin:0}</style><div class=top><b>DEVELOPMENT VERIFICATION LOG</b><span>reply-quality-eval · actual command output</span></div><div class=wrap><div class=cmd>$ PYTHONPATH=src python3 -m unittest discover -s tests -v</div><pre>^Dtest_missing_input_returns_input_error_code (test_cli.CliTests.test_missing_input_returns_input_error_code) ... configuration/input error: /var/folders/r5/_pbqf5t92vz9tyqmm2k1r0yr0000gn/T/tmpr1sucuv9/missing.json: file not found
+ok
+test_mock_run_scores_all_twenty_cases (test_cli.CliTests.test_mock_run_scores_all_twenty_cases) ... 已评估 20 条回复（judge=mock）
+json: /var/folders/r5/_pbqf5t92vz9tyqmm2k1r0yr0000gn/T/tmp9ewi8oly/evaluation_results.json
+csv: /var/folders/r5/_pbqf5t92vz9tyqmm2k1r0yr0000gn/T/tmp9ewi8oly/case_scores.csv
+markdown: /var/folders/r5/_pbqf5t92vz9tyqmm2k1r0yr0000gn/T/tmp9ewi8oly/evaluation_report.md
+html: /var/folders/r5/_pbqf5t92vz9tyqmm2k1r0yr0000gn/T/tmp9ewi8oly/evaluation_report.html
+ok
+test_duplicate_case_ids_are_rejected (test_io.InputTests.test_duplicate_case_ids_are_rejected) ... ok
+test_reference_ids_must_match_cases (test_io.InputTests.test_reference_ids_must_match_cases) ... ok
+test_valid_cases_are_loaded (test_io.InputTests.test_valid_cases_are_loaded) ... ok
+test_descriptive_specific_word_is_not_treated_as_a_question (test_mock_judge.MockJudgeTests.test_descriptive_specific_word_is_not_treated_as_a_question) ... ok
+test_direct_action_is_not_treated_like_pure_deflection (test_mock_judge.MockJudgeTests.test_direct_action_is_not_treated_like_pure_deflection) ... ok
+test_emotional_complaint_requires_empathy (test_mock_judge.MockJudgeTests.test_emotional_complaint_requires_empathy) ... ok
+test_failure_state_without_pronoun_still_needs_case_clarification (test_mock_judge.MockJudgeTests.test_failure_state_without_pronoun_still_needs_case_clarification) ... ok
+test_future_generic_assistance_is_weaker_than_active_case_handling (test_mock_judge.MockJudgeTests.test_future_generic_assistance_is_weaker_than_active_case_handling) ... ok
+test_multi_intent_reply_is_rewarded_for_covering_both (test_mock_judge.MockJudgeTests.test_multi_intent_reply_is_rewarded_for_covering_both) ... ok
+test_new_product_troubleshooting_burden_scores_below_direct_remedy (test_mock_judge.MockJudgeTests.test_new_product_troubleshooting_burden_scores_below_direct_remedy) ... ok
+test_numbered_possible_causes_are_not_counted_as_action_steps (test_mock_judge.MockJudgeTests.test_numbered_possible_causes_are_not_counted_as_action_steps) ... ok
+test_repeated_failure_is_not_mistaken_for_multiple_intents (test_mock_judge.MockJudgeTests.test_repeated_failure_is_not_mistaken_for_multiple_intents) ... ok
+test_repeating_steps_to_confused_user_is_not_a_service_closure (test_mock_judge.MockJudgeTests.test_repeating_steps_to_confused_user_is_not_a_service_closure) ... ok
+test_same_input_produces_identical_result (test_mock_judge.MockJudgeTests.test_same_input_produces_identical_result) ... ok
+test_specific_case_deflection_lowers_usefulness (test_mock_judge.MockJudgeTests.test_specific_case_deflection_lowers_usefulness) ... ok
+test_unsupported_numeric_policy_claim_is_flagged_not_declared_false (test_mock_judge.MockJudgeTests.test_unsupported_numeric_policy_claim_is_flagged_not_declared_false) ... ok
+test_metric_rejects_out_of_range_score (test_models.ModelTests.test_metric_rejects_out_of_range_score) ... ok
+test_weighted_score_and_critical_cap (test_models.ModelTests.test_weighted_score_and_critical_cap) ... ok
+test_invalid_json_is_reported_without_secret (test_qwen_judge.QwenJudgeTests.test_invalid_json_is_reported_without_secret) ... ok
+test_missing_api_key_fails_without_fallback (test_qwen_judge.QwenJudgeTests.test_missing_api_key_fails_without_fallback) ... ok
+test_reference_text_never_enters_request (test_qwen_judge.QwenJudgeTests.test_reference_text_never_enters_request) ... ok
+test_valid_response_is_converted_to_case_evaluation (test_qwen_judge.QwenJudgeTests.test_valid_response_is_converted_to_case_evaluation) ... ok
+test_all_formats_share_summary_and_worst_three (test_reporting.ReportingTests.test_all_formats_share_summary_and_worst_three) ... ok
+test_mixed_positive_and_negative_note_is_middle_tier (test_validation.ValidationTests.test_mixed_positive_and_negative_note_is_middle_tier) ... ok
+test_positive_negative_gap_is_reported (test_validation.ValidationTests.test_positive_negative_gap_is_reported) ... ok
+test_spearman_is_one_for_matching_order (test_validation.ValidationTests.test_spearman_is_one_for_matching_order) ... ok
+test_ties_receive_average_rank (test_validation.ValidationTests.test_ties_receive_average_rank) ... ok
+
+----------------------------------------------------------------------
+Ran 29 tests in 0.007s
+
+OK
+c50d42a fix: calibrate generic service-quality signals
+d3095b3 feat: add validation metrics and report renderers
+849c963 feat: add optional qwen judge
+cb051ff feat: add deterministic mock quality judge
+837d51b feat: add evaluation contracts and input validation
+0222f36 data: add evaluation inputs
+</pre></div>

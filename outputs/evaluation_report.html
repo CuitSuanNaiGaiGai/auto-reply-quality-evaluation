@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>自动回复质量评估</title>
+<style>
+:root{--ink:#172033;--muted:#657085;--paper:#f5f7fb;--card:#fff;--blue:#4b67d1;--line:#e4e8f0}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif}
+.shell{max-width:1160px;margin:auto;padding:38px 28px 70px}.hero{background:linear-gradient(135deg,#152346,#384f9e);color:white;border-radius:24px;padding:34px;display:grid;grid-template-columns:1fr auto;gap:30px;box-shadow:0 18px 50px #20346a30}
+.eyebrow{font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:#b9c9ff}h1{margin:8px 0;font-size:32px}.hero p{color:#d7e0ff;margin:0;max-width:640px;line-height:1.65}
+.score{width:150px;height:150px;border:10px solid #ffffff2b;border-top-color:#7ee0b6;border-radius:50%;display:grid;place-content:center;text-align:center}.score strong{font-size:38px}.score span{font-size:12px;color:#cad6ff}
+.section{margin-top:34px}.section-title{display:flex;justify-content:space-between;align-items:end;margin-bottom:14px}h2{font-size:20px;margin:0}.section-title p{margin:0;color:var(--muted);font-size:13px}
+.metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.metric,.panel,.case-card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 4px 18px #1720330a}.metric{padding:18px}.metric-head{display:flex;justify-content:space-between;gap:15px}.metric-head strong{font-size:21px}.track{height:8px;background:#eef1f6;border-radius:99px;margin:13px 0 9px;overflow:hidden}.track i{display:block;height:100%;border-radius:99px}small{color:var(--muted)}
+.overview{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}.panel{padding:20px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.stat{background:#f7f8fc;padding:15px;border-radius:12px}.stat b{display:block;font-size:24px}.stat span{font-size:12px;color:var(--muted)}table{width:100%;border-collapse:collapse}td{padding:9px;border-bottom:1px solid var(--line);font-size:13px}td:last-child{text-align:right;font-weight:700}
+.case-card{padding:22px;margin-bottom:14px}.case-card header{display:flex;align-items:center;gap:12px}.case-card h3,.case-card header p{margin:0}.case-card header p{color:#e45c67;font-weight:700}.rank{background:#edf0ff;color:var(--blue);font-weight:800;border-radius:10px;padding:10px}.case-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:24px;margin-top:16px}label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.case-grid p{line-height:1.6;margin:5px 0 14px}ul{list-style:none;padding:0;margin:0}li{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding:8px 0;font-size:13px}.tag{display:inline-block;background:#fff1f2;color:#ad3c49;padding:5px 8px;border-radius:7px;margin:2px 5px 2px 0;font-size:11px}.tag.neutral{background:#edf7f3;color:#27775d}.improve{background:#f5f7ff;border-left:3px solid var(--blue);padding:12px;line-height:1.55}
+.foot{margin-top:30px;color:var(--muted);font-size:12px;line-height:1.7}@media(max-width:760px){.hero,.case-grid,.overview{grid-template-columns:1fr}.score{width:110px;height:110px}.metrics{grid-template-columns:1fr}}
+</style></head><body><main class="shell">
+<section class="hero"><div><div class="eyebrow">QUALITY EVALUATION · mock</div><h1>客服自动回复质量评估</h1><p>20 条回复的可解释离线评估。分数衡量意图、服务闭环、事实依据、语气与清晰度；无证据的声明被标为待核实，不直接视为错误。</p></div><div class="score"><strong>64.5</strong><span>OVERALL / 100</span></div></section>
+<section class="section"><div class="section-title"><h2>指标表现</h2><p>均分 · 权重 · 样本范围</p></div><div class="metrics"><article class="metric">
+              <div class="metric-head"><span>意图准确性</span><strong>70.0</strong></div>
+              <div class="track"><i style="width:70.0%;background:#f0a329"></i></div>
+              <small>权重 25% · 范围 50–100</small>
+            </article><article class="metric">
+              <div class="metric-head"><span>有用性与服务闭环</span><strong>35.0</strong></div>
+              <div class="track"><i style="width:35.0%;background:#e45c67"></i></div>
+              <small>权重 30% · 范围 10–75</small>
+            </article><article class="metric">
+              <div class="metric-head"><span>事实依据与幻觉风险</span><strong>79.5</strong></div>
+              <div class="track"><i style="width:79.5%;background:#24b47e"></i></div>
+              <small>权重 30% · 范围 35–100</small>
+            </article><article class="metric">
+              <div class="metric-head"><span>语气与情绪适配</span><strong>81.0</strong></div>
+              <div class="track"><i style="width:81.0%;background:#24b47e"></i></div>
+              <small>权重 10% · 范围 40–100</small>
+            </article><article class="metric">
+              <div class="metric-head"><span>清晰与简洁</span><strong>90.8</strong></div>
+              <div class="track"><i style="width:90.75%;background:#24b47e"></i></div>
+              <small>权重 5% · 范围 75–100</small>
+            </article></div></section>
+<section class="section overview"><div class="panel"><div class="section-title"><h2>验证摘要</h2></div><div class="stats"><div class="stat"><b>0.3026</b><span>Spearman 相关</span></div><div class="stat"><b>4.28</b><span>正负档均分差</span></div><div class="stat"><b>63.6%</b><span>问题标签匹配率</span></div></div></div><div class="panel"><div class="section-title"><h2>高频风险</h2></div><table><tr><td>self_service_deflection</td><td>15</td></tr><tr><td>unsupported_claim</td><td>11</td></tr><tr><td>missing_clarification</td><td>7</td></tr><tr><td>specific_case_unresolved</td><td>6</td></tr><tr><td>unsupported_capability</td><td>4</td></tr><tr><td>emotion_underaddressed</td><td>2</td></tr><tr><td>unnecessary_troubleshooting_burden</td><td>1</td></tr></table></div></section>
+<section class="section"><div class="section-title"><h2>最差 3 条</h2><p>按综合分升序，同分按 ID</p></div><article class="case-card">
+              <header><span class="rank">#1</span><div><h3>case_19</h3><p>47.2 / 100</p></div></header>
+              <div class="case-grid"><div><label>用户问题</label><p>我要买的那个包什么时候补货</p>
+              <label>自动回复</label><p>您好，商品补货时间不固定，建议您关注商品页面或联系客服询问预计到货时间。您也可以将商品加入购物车，补货时系统会自动提醒您。如果长时间未补货，可以考虑查看类似的替代商品。</p></div><ul><li><span>意图准确性</span><b>55</b></li><li><span>有用性与服务闭环</span><b>10</b></li><li><span>事实依据与幻觉风险</span><b>60</b></li><li><span>语气与情绪适配</span><b>80</b></li><li><span>清晰与简洁</span><b>90</b></li></ul></div>
+              <div class="tags"><span class='tag'>specific_case_unresolved</span><span class='tag'>missing_clarification</span><span class='tag'>self_service_deflection</span><span class='tag'>unsupported_claim</span><span class='tag'>unsupported_capability</span></div><p class="improve"><b>改进：</b>主动追问订单、账号或商品信息，针对当前个案给出下一步。</p>
+            </article><article class="case-card">
+              <header><span class="rank">#2</span><div><h3>case_08</h3><p>51.8 / 100</p></div></header>
+              <div class="case-grid"><div><label>用户问题</label><p>这个手机壳是硅胶的还是塑料的</p>
+              <label>自动回复</label><p>您好，这款手机壳采用的是TPU软胶材质，具有较好的防摔性能和手感。如果您需要更具体的材质信息，可以查看商品详情页的参数说明，或联系客服获取。</p></div><ul><li><span>意图准确性</span><b>55</b></li><li><span>有用性与服务闭环</span><b>10</b></li><li><span>事实依据与幻觉风险</span><b>75</b></li><li><span>语气与情绪适配</span><b>80</b></li><li><span>清晰与简洁</span><b>90</b></li></ul></div>
+              <div class="tags"><span class='tag'>specific_case_unresolved</span><span class='tag'>missing_clarification</span><span class='tag'>self_service_deflection</span><span class='tag'>unsupported_claim</span></div><p class="improve"><b>改进：</b>主动追问订单、账号或商品信息，针对当前个案给出下一步。</p>
+            </article><article class="case-card">
+              <header><span class="rank">#3</span><div><h3>case_12</h3><p>51.8 / 100</p></div></header>
+              <div class="case-grid"><div><label>用户问题</label><p>快递两天没更新了</p>
+              <label>自动回复</label><p>物流信息长时间未更新可能是以下原因：1.包裹正在中转途中 2.快递公司信息更新延迟 3.包裹可能出现问题。建议您耐心等待1-2天，如果仍未更新，请联系快递公司查询或联系我们的客服协助跟进。</p></div><ul><li><span>意图准确性</span><b>55</b></li><li><span>有用性与服务闭环</span><b>10</b></li><li><span>事实依据与幻觉风险</span><b>75</b></li><li><span>语气与情绪适配</span><b>80</b></li><li><span>清晰与简洁</span><b>90</b></li></ul></div>
+              <div class="tags"><span class='tag'>specific_case_unresolved</span><span class='tag'>missing_clarification</span><span class='tag'>self_service_deflection</span><span class='tag'>unsupported_claim</span></div><p class="improve"><b>改进：</b>主动追问订单、账号或商品信息，针对当前个案给出下一步。</p>
+            </article></section>
+<p class="foot">报告中 unsupported_claim 仅表示当前输入无法验证，需要商品库、订单系统或政策知识库核实。本报告不将人工参考答案用于单条评分。</p>
+</main></body></html>
