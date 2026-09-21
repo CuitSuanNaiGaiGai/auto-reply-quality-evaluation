@@ -37,6 +37,15 @@ SPECIFIC_PATTERNS = (
     r"收到",
     r"用了[^\uff0c\u3002！？\s]*",
 )
+FAILURE_STATE_PATTERNS = (
+    r"用不了",
+    r"取不出来",
+    r"没到账",
+    r"没更新",
+    r"没声音",
+    r"不工作",
+    r"是坏的",
+)
 NEEDS_CONTEXT_PATTERNS = (
     r"退款",
     r"退货",
@@ -57,7 +66,8 @@ CLARIFY_PATTERNS = (
     r"请告诉",
     r"请问",
     r"哪款",
-    r"具体[^\uff0c\u3002！？]*",
+    r"告诉我[^\uff0c\u3002！？]*",
+    r"告诉我们[^\uff0c\u3002！？]*",
     r"卡在哪",
     r"倾向哪",
 )
@@ -67,8 +77,6 @@ PROACTIVE_PATTERNS = (
     r"帮您确认",
     r"我来帮",
     r"马上帮",
-    r"会协助您处理",
-    r"我们会协助",
 )
 DEFLECTION_PATTERNS = (
     r"查看[^\uff0c\u3002！？]*(?:详情页|页面|记录|进度|参数|评价)",
@@ -86,7 +94,6 @@ ACTION_PATTERNS = (
     r"退货退款",
     r"换新",
     r"在[^\uff0c\u3002！？]*页[^\uff0c\u3002！？]*(?:点击|操作|提交)",
-    r"[1-9][.\u3001]",
 )
 EMOTION_PATTERNS = (
     r"态度太差",
@@ -108,6 +115,25 @@ EMPATHY_PATTERNS = (
     r"确实不应该",
     r"非常重视",
     r"不用再等",
+)
+DIFFICULTY_PATTERNS = (
+    r"太复杂",
+    r"搞半天",
+    r"不知道怎么操作",
+    r"看不懂",
+    r"不会操作",
+)
+RECENT_PURCHASE_PATTERNS = (
+    r"才买[^\uff0c\u3002！？]*天",
+    r"刚买",
+    r"新买",
+    r"用了[^\uff0c\u3002！？]*周",
+)
+TROUBLESHOOTING_PATTERNS = (
+    r"建议[^\uff0c\u3002！？]*尝试",
+    r"请先尝试",
+    r"重新配对",
+    r"重启[^\uff0c\u3002！？]*",
 )
 CLAIM_PATTERNS = (
     r"\d+\s*(?:-|~|–|至)\s*\d+\s*(?:个)?(?:工作日|天|小时|Wh|mAh)",
@@ -143,6 +169,9 @@ class Signals:
     actions: list[str]
     emotion: list[str]
     empathy: list[str]
+    difficulty: list[str]
+    recent_purchase: list[str]
+    troubleshooting: list[str]
     claims: list[str]
     capabilities: list[str]
     completed_actions: list[str]
@@ -151,7 +180,7 @@ class Signals:
 
 
 def _signals(question: str, reply: str) -> Signals:
-    multi_intent = bool(re.search(r"顺便|两个问题|分别|又", question))
+    multi_intent = bool(re.search(r"顺便|两个问题|同时查|分别", question))
     intent_terms = {
         "return": ("退货" in question, "退货" in reply or "换货" in reply),
         "refund": ("退款" in question, "退款" in reply),
@@ -162,7 +191,7 @@ def _signals(question: str, reply: str) -> Signals:
     }
     covered = sum(1 for asked, answered in intent_terms.values() if asked and answered)
     return Signals(
-        specific=_find(question, SPECIFIC_PATTERNS),
+        specific=_find(question, SPECIFIC_PATTERNS + FAILURE_STATE_PATTERNS),
         context_topic=_find(question, NEEDS_CONTEXT_PATTERNS),
         clarification=_find(reply, CLARIFY_PATTERNS),
         proactive=_find(reply, PROACTIVE_PATTERNS),
@@ -170,6 +199,9 @@ def _signals(question: str, reply: str) -> Signals:
         actions=_find(reply, ACTION_PATTERNS),
         emotion=_find(question, EMOTION_PATTERNS),
         empathy=_find(reply, EMPATHY_PATTERNS),
+        difficulty=_find(question, DIFFICULTY_PATTERNS),
+        recent_purchase=_find(question, RECENT_PURCHASE_PATTERNS),
+        troubleshooting=_find(reply, TROUBLESHOOTING_PATTERNS),
         claims=_find(reply, CLAIM_PATTERNS),
         capabilities=_find(reply, CAPABILITY_PATTERNS),
         completed_actions=_find(reply, COMPLETED_ACTION_PATTERNS),
@@ -200,9 +232,20 @@ class MockJudge:
         intent = 75.0
         if signal.clarification:
             intent += 15
-        if signal.specific and signal.context_topic and not signal.clarification:
+        if (
+            signal.specific
+            and signal.context_topic
+            and not signal.clarification
+            and not signal.actions
+        ):
             intent -= 20
             tags.extend(["specific_case_unresolved", "missing_clarification"])
+        if signal.difficulty and not signal.clarification:
+            intent -= 25
+            tags.append("missing_clarification")
+        if signal.recent_purchase and signal.troubleshooting:
+            intent -= 10
+            tags.append("unnecessary_troubleshooting_burden")
         if signal.multi_intent:
             if signal.covered_intents >= 2 or "分别" in reply:
                 intent += 10
@@ -218,14 +261,18 @@ class MockJudge:
         if signal.actions:
             usefulness += 10
         if signal.deflection:
-            usefulness -= 15
+            usefulness -= 30
             tags.append("self_service_deflection")
         if signal.specific and signal.context_topic and not (
-            signal.proactive or signal.clarification
+            signal.proactive or signal.clarification or signal.actions
         ):
             usefulness -= 20
             if "specific_case_unresolved" not in tags:
                 tags.append("specific_case_unresolved")
+        if signal.difficulty and not signal.clarification:
+            usefulness -= 35
+        if signal.recent_purchase and signal.troubleshooting:
+            usefulness -= 25
 
         if knowledge:
             unsupported_claims = [claim for claim in signal.claims if claim not in knowledge]

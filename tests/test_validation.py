@@ -1,6 +1,6 @@
 import unittest
 
-from reply_eval.validation import spearman_rank, summarize_tiers
+from reply_eval.validation import classify_note, spearman_rank, summarize_tiers
 
 
 class ValidationTests(unittest.TestCase):
@@ -18,6 +18,11 @@ class ValidationTests(unittest.TestCase):
 
     def test_ties_receive_average_rank(self):
         self.assertEqual(spearman_rank([1, 1, 2], [10, 10, 20]), 1.0)
+
+    def test_mixed_positive_and_negative_note_is_middle_tier(self):
+        tier, reason = classify_note("处理方式基本合理，但把用户推走了。")
+        self.assertEqual(tier, "middle")
+        self.assertIn("同时命中", reason)
 
 
 if __name__ == "__main__":

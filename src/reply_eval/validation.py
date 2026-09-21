@@ -95,12 +95,17 @@ def summarize_tiers(rows: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def classify_note(note: str) -> tuple[str, str]:
-    for phrase in NEGATIVE_PHRASES:
-        if phrase in note:
-            return "negative", phrase
-    for phrase in POSITIVE_PHRASES:
-        if phrase in note:
-            return "positive", phrase
+    negative_hits = [phrase for phrase in NEGATIVE_PHRASES if phrase in note]
+    positive_hits = [phrase for phrase in POSITIVE_PHRASES if phrase in note]
+    if negative_hits and positive_hits:
+        return (
+            "middle",
+            f"同时命中正向“{positive_hits[0]}”和负向“{negative_hits[0]}”",
+        )
+    if negative_hits:
+        return "negative", negative_hits[0]
+    if positive_hits:
+        return "positive", positive_hits[0]
     return "middle", "未命中明确正向或严重负向短语"
 
 
