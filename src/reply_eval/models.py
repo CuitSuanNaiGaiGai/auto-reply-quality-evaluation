@@ -43,7 +43,7 @@ class CaseEvaluation:
     critical_fail: bool
     critical_reason: str | None
     improvement: str
-    evaluator: dict[str, str]
+    evaluator: dict[str, Any]
 
     def __post_init__(self) -> None:
         if set(self.metrics) != set(WEIGHTS):
