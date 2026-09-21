@@ -1,12 +1,14 @@
 # 0109 · 客服自动回复质量评估流水线
 
-一套可复现、可解释的客服回复评估工具。默认使用无网络依赖的确定性 mock judge，也支持通过 OpenAI-compatible HTTP 接口调用 Qwen。
+一套可复现、可解释的客服回复评估工具。提供确定性 Mock、Qwen 语义评估和推荐的 Hybrid 混合评估三种模式。
 
-> 核心结论：20 条样本的加权均分为 **64.49 / 100**，其中“有用性与服务闭环”仅 **35.00** 分。当前更适合继续小流量、有人工兜底的使用，不建议直接扩大全量覆盖。
+> 当前仓库提交的是可复现的 **Mock 基线报告**：20 条被测回复的加权均分为 **64.49 / 100**，其中“有用性与服务闭环”为 **35.00**。64.49 衡量的是这批回复，不是评估器自身准确率，也不是需要人为调高的目标。
 
 ## 快速运行
 
-需要 Python 3.10 或更高版本，默认模式无第三方依赖。
+需要 Python 3.10 或更高版本，无第三方依赖。
+
+### 1. 先验证离线基线
 
 ```bash
 PYTHONPATH=src python3 -m reply_eval.cli \
@@ -29,15 +31,60 @@ PYTHONPATH=src python3 -m unittest discover -s tests -v
 - [完整 JSON](outputs/evaluation_results.json)
 - [Case 分数 CSV](outputs/case_scores.csv)
 
-## Qwen 模式
+### 2. 配置 Qwen
 
-Qwen 密钥不保存在仓库中。从 `.env.example` 可以看到所需变量，运行前由用户自行设置：
+Qwen 密钥只放在项目根目录的 `.env`，该文件已被 Git 忽略：
 
 ```bash
-export QWEN_API_KEY="your-api-key"
-export QWEN_BASE_URL="https://dashscope.aliyuncs.com/compatible-mode/v1"
-export QWEN_MODEL="qwen-plus"
+cd /Users/zx/Desktop/晓多科技
+cp .env.example .env
+```
 
+然后编辑 `.env`：
+
+```dotenv
+QWEN_API_KEY=填写新生成的密钥
+QWEN_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
+QWEN_MODEL=qwen-plus
+```
+
+也可继续使用 shell 环境变量；优先级为：shell 环境变量 > `--env-file` > 当前目录 `.env` > 默认值。加载器只读取三个 `QWEN_*` 字段，不执行命令、变量展开或任意代码。
+
+> 如果密钥曾出现在聊天、截图或终端分享内容中，应在阿里云控制台撤销并新建，不能继续复用。本仓库和报告不会保存或打印密钥。
+
+### 3. 运行推荐的 Hybrid 模式
+
+```bash
+PYTHONPATH=src python3 -m reply_eval.cli \
+  --input task3_auto_replies.json \
+  --human-ref task3_human_ref.json \
+  --output-dir outputs-hybrid \
+  --judge hybrid
+```
+
+Hybrid 会为每条数据运行 Mock 与 Qwen，然后逐项融合：
+
+```text
+hybrid_metric = qwen_metric × 70% + mock_metric × 30%
+```
+
+Qwen 擅长隐含意图、语境和情绪判断；Mock 提供稳定的规则回归信号。风险标签取并集，任一 Judge 触发 `critical_fail` 时最终结果仍为严重失败。70/30 是可解释的初始权重，不声称已经统计最优。
+
+正常情况下 20 条数据调用 Qwen 20 次；只有格式错误、HTTP 429 或 5xx 才对该条重试一次，极端上限为 40 次。Qwen 返回空 `improvement` 时不重试，直接使用本地确定性建议；Hybrid 下优先使用 Mock 建议。
+
+Hybrid 报告同时保留：
+
+- `metrics`：最终融合分；
+- `mock_metrics` 与 `qwen_metrics`：两组原始分；
+- `judge_disagreement`：逐项差值和最大差值；
+- 请求次数、重试次数和本地建议降级次数；
+- Mock、Qwen、Hybrid 各自对人工参考的验证结果。
+
+### 4. 单独运行 Qwen 模式
+
+如果只想观察 Qwen 分数：
+
+```bash
 PYTHONPATH=src python3 -m reply_eval.cli \
   --input task3_auto_replies.json \
   --human-ref task3_human_ref.json \
@@ -45,7 +92,16 @@ PYTHONPATH=src python3 -m reply_eval.cli \
   --judge qwen
 ```
 
-`QWEN_BASE_URL` 和 `QWEN_MODEL` 均可替换。未设置 `QWEN_API_KEY` 时，Qwen 模式会明确失败，不会悄然回退到 mock。请求使用 `temperature=0` 和版本化量表，返回后再经本地结构与分数边界校验。
+未设置 `QWEN_API_KEY` 时，Qwen/Hybrid 会明确失败，不会悄然回退到 Mock。请求使用 `temperature=0` 和版本化量表，返回后经本地结构与分数边界校验。
+
+常见错误：
+
+| 错误 | 含义与处理 |
+|---|---|
+| HTTP 401/403 | 密钥无效或账号没有模型权限；重新生成密钥并检查授权 |
+| HTTP 404 | `QWEN_MODEL`、`QWEN_BASE_URL` 或账号地域不匹配；不要猜测模型名，按[阿里云百炼模型列表](https://help.aliyun.com/zh/model-studio/model-pricing)填写 |
+| invalid response | 首次结构化输出不符合契约；程序会附带脱敏错误自动重试一次 |
+| `improvement` 为空 | 非关键字段，程序本地降级，不消耗重试 |
 
 ## 指标定义
 
@@ -75,11 +131,13 @@ overall = intent_accuracy * 0.25
 
 ```text
 JSON 输入校验
-  → Mock Judge 或 Qwen Judge
-  → 五维分数、证据、风险标签与改进建议
+  ├─ mock：Mock Judge
+  ├─ qwen：Qwen Judge
+  └─ hybrid：Mock Judge + Qwen Judge → 70/30 确定性融合
+  → 五维分数、证据、风险标签、分歧与改进建议
   → 严重风险门槛
   → 整体统计和最差三条
-  → 人工参考独立验证
+  → 人工参考独立验证（不参与评分）
   → JSON / CSV / Markdown / HTML
 ```
 
@@ -94,7 +152,9 @@ Mock judge 的规则不使用 case ID，重点检测：
 - 投诉、异常登录、敏感肌等场景是否有必要的情绪承接；
 - 是否包含无当前证据的时效、政策、材质、质保或服务能力声明。
 
-## 本次结果
+## 当前已提交的 Mock 基线结果
+
+以下数值来自 `--judge mock`，用于无密钥复现和规则回归。运行 `--judge hybrid` 后，应以 `outputs-hybrid/` 中标注为 Hybrid 的结果作为语义增强评估，不应把两种模式的分数混用。
 
 ### 总体与分布
 
@@ -181,14 +241,16 @@ Mock judge 的规则不使用 case ID，重点检测：
 ```text
 src/reply_eval/
   cli.py            # 命令行编排与退出码
+  env.py            # 安全、白名单式 .env 加载
+  hybrid_judge.py   # Qwen 70% + Mock 30% 融合与分歧审计
   io.py             # JSON schema 和 ID 校验
   models.py         # 分数契约与加权规则
   mock_judge.py     # 确定性通用规则
   qwen_judge.py     # Qwen OpenAI-compatible 后端
   validation.py     # 人工参考独立验证
   reporting.py      # JSON / CSV / Markdown / HTML
-tests/              # 29 项单元与端到端测试
-outputs/            # 本次完整评估结果
+tests/              # 单元、安全与端到端测试（不访问真实 Qwen）
+outputs/            # 可复现的 Mock 基线报告
 screenshots/        # 开发和运行结果截图
 ```
 

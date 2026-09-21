@@ -349,9 +349,9 @@ def _html_report(payload: dict[str, Any]) -> str:
 .foot{{margin-top:30px;color:var(--muted);font-size:12px;line-height:1.7}}@media(max-width:760px){{.hero,.case-grid,.overview{{grid-template-columns:1fr}}.score{{width:110px;height:110px}}.metrics{{grid-template-columns:1fr}}}}
 </style></head><body><main class="shell">
 <section class="hero"><div><div class="eyebrow">QUALITY EVALUATION · {mode}</div><h1>客服自动回复质量评估</h1><p>{summary['case_count']} 条回复的可解释离线评估。分数衡量意图、服务闭环、事实依据、语气与清晰度；无证据的声明被标为待核实，不直接视为错误。</p></div><div class="score"><strong>{summary['overall_mean']:.1f}</strong><span>OVERALL / 100</span></div></section>
-	<section class="section"><div class="section-title"><h2>指标表现</h2><p>均分 · 权重 · 样本范围</p></div><div class="metrics">{''.join(metric_cards)}</div></section>
-	{component_html}
-	<section class="section overview"><div class="panel"><div class="section-title"><h2>验证摘要</h2></div><div class="stats"><div class="stat"><b>{correlation}</b><span>Spearman 相关</span></div><div class="stat"><b>{gap}</b><span>正负档均分差</span></div><div class="stat"><b>{match_text}</b><span>问题标签匹配率</span></div></div></div><div class="panel"><div class="section-title"><h2>高频风险</h2></div><table>{risk_rows}</table></div></section>
+<section class="section"><div class="section-title"><h2>指标表现</h2><p>均分 · 权重 · 样本范围</p></div><div class="metrics">{''.join(metric_cards)}</div></section>
+{component_html}
+<section class="section overview"><div class="panel"><div class="section-title"><h2>验证摘要</h2></div><div class="stats"><div class="stat"><b>{correlation}</b><span>Spearman 相关</span></div><div class="stat"><b>{gap}</b><span>正负档均分差</span></div><div class="stat"><b>{match_text}</b><span>问题标签匹配率</span></div></div></div><div class="panel"><div class="section-title"><h2>高频风险</h2></div><table>{risk_rows}</table></div></section>
 <section class="section"><div class="section-title"><h2>最差 3 条</h2><p>按综合分升序，同分按 ID</p></div>{''.join(worst_cards)}</section>
 <p class="foot">报告中 unsupported_claim 仅表示当前输入无法验证，需要商品库、订单系统或政策知识库核实。本报告不将人工参考答案用于单条评分。</p>
 </main></body></html>"""

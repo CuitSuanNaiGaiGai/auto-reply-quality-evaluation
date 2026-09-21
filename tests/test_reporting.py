@@ -9,6 +9,47 @@ from reply_eval.reporting import write_reports
 
 
 class ReportingTests(unittest.TestCase):
+    def test_rendered_text_files_have_no_trailing_whitespace(self):
+        names = list(
+            [
+                "intent_accuracy",
+                "usefulness",
+                "groundedness",
+                "tone",
+                "clarity",
+            ]
+        )
+        case = {
+            "id": "case_01",
+            "overall_score": 75,
+            "user_question": "q",
+            "auto_reply": "a",
+            "metrics": {
+                name: {"score": 75, "reason": "r", "evidence": ["e"]}
+                for name in names
+            },
+            "risk_tags": [],
+            "critical_fail": False,
+            "critical_reason": None,
+            "improvement": "improve",
+            "evaluator": {"mode": "mock", "version": "1.0"},
+        }
+        result = RunResult(
+            metadata={"judge_mode": "mock"},
+            summary={},
+            validation={},
+            cases=[case],
+        )
+
+        with tempfile.TemporaryDirectory() as directory:
+            paths = write_reports(result, Path(directory))
+            for name, path in paths.items():
+                with self.subTest(format=name):
+                    lines = path.read_text(encoding="utf-8").splitlines()
+                    self.assertFalse(
+                        any(line != line.rstrip() for line in lines)
+                    )
+
     def test_all_formats_share_summary_and_worst_three(self):
         names = [
             "intent_accuracy",
