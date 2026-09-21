@@ -7,6 +7,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+from .env import EnvFileError, load_qwen_env
 from .io import InputError, load_cases, load_human_references
 from .mock_judge import MockJudge
 from .models import RunResult
@@ -29,6 +30,11 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--judge", choices=("mock", "qwen"), default="mock", help="评估后端"
     )
+    parser.add_argument(
+        "--env-file",
+        type=Path,
+        help="Qwen 配置文件；已存在的 shell 环境变量优先",
+    )
     return parser
 
 
@@ -41,8 +47,12 @@ def main(argv: list[str] | None = None) -> int:
             references = load_human_references(
                 args.human_ref, {case["id"] for case in cases}
             )
-        judge = MockJudge() if args.judge == "mock" else QwenJudge(QwenConfig.from_env())
-    except (InputError, QwenError) as exc:
+        if args.judge == "mock":
+            judge = MockJudge()
+        else:
+            load_qwen_env(args.env_file)
+            judge = QwenJudge(QwenConfig.from_env())
+    except (EnvFileError, InputError, QwenError) as exc:
         print(f"configuration/input error: {exc}", file=sys.stderr)
         return 2
 
