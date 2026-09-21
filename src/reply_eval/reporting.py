@@ -57,7 +57,7 @@ def build_summary(cases: list[dict[str, Any]]) -> dict[str, Any]:
     )
     band_counts = Counter(_quality_band(score) for score in scores)
     worst = sorted(cases, key=lambda case: (case["overall_score"], case["id"]))[:3]
-    return {
+    summary: dict[str, Any] = {
         "case_count": len(cases),
         "overall_mean": round(mean(scores), 2),
         "overall_median": round(median(scores), 2),
@@ -72,6 +72,72 @@ def build_summary(cases: list[dict[str, Any]]) -> dict[str, Any]:
         "critical_fail_count": sum(bool(case["critical_fail"]) for case in cases),
         "worst_three": [case["id"] for case in worst],
     }
+    hybrid_cases = [
+        case
+        for case in cases
+        if "mock_metrics" in case and "qwen_metrics" in case
+    ]
+    if hybrid_cases:
+        summary["component_overall_means"] = {
+            "mock": round(
+                mean(
+                    float(case["mock_overall_score"])
+                    for case in hybrid_cases
+                ),
+                2,
+            ),
+            "qwen": round(
+                mean(
+                    float(case["qwen_overall_score"])
+                    for case in hybrid_cases
+                ),
+                2,
+            ),
+            "hybrid": summary["overall_mean"],
+        }
+        summary["component_metric_means"] = {
+            mode: {
+                name: round(
+                    mean(
+                        float(case[f"{mode}_metrics"][name]["score"])
+                        for case in hybrid_cases
+                    ),
+                    2,
+                )
+                for name in WEIGHTS
+            }
+            for mode in ("mock", "qwen")
+        }
+        summary["component_metric_means"]["hybrid"] = {
+            name: stats["mean"] for name, stats in metric_stats.items()
+        }
+        summary["largest_disagreements"] = sorted(
+            (
+                {
+                    "id": case["id"],
+                    "max_difference": float(
+                        case["judge_disagreement"]["max"]
+                    ),
+                    "metric_differences": {
+                        name: float(case["judge_disagreement"][name])
+                        for name in WEIGHTS
+                    },
+                }
+                for case in hybrid_cases
+            ),
+            key=lambda item: (-item["max_difference"], item["id"]),
+        )[:3]
+        summary["request_count"] = sum(
+            int(case.get("qwen_request_count", 0)) for case in hybrid_cases
+        )
+        summary["retry_count"] = sum(
+            int(case.get("qwen_retry_count", 0)) for case in hybrid_cases
+        )
+        summary["local_improvement_fallback_count"] = sum(
+            bool(case.get("local_improvement_fallback", False))
+            for case in hybrid_cases
+        )
+    return summary
 
 
 def _markdown_report(payload: dict[str, Any]) -> str:
@@ -100,6 +166,42 @@ def _markdown_report(payload: dict[str, Any]) -> str:
             f"{distribution['poor_0_59']} | {distribution['acceptable_60_74']} | "
             f"{distribution['strong_75_100']} |"
         )
+    if "component_overall_means" in summary:
+        component_overall = summary["component_overall_means"]
+        component_metrics = summary["component_metric_means"]
+        lines.extend(
+            [
+                "",
+                "## Hybrid 审计：Mock / Qwen / Hybrid",
+                "",
+                "最终 Hybrid 分数使用 Qwen 70% + Mock 30%；组件分仅用于诊断。",
+                "",
+                "| 评估器 | 综合均分 | 意图 | 有用性 | 事实依据 | 语气 | 清晰度 |",
+                "|---|---:|---:|---:|---:|---:|---:|",
+            ]
+        )
+        for mode in ("mock", "qwen", "hybrid"):
+            values = component_metrics[mode]
+            lines.append(
+                f"| {mode.title()} | {component_overall[mode]:.2f} | "
+                + " | ".join(f"{values[name]:.2f}" for name in WEIGHTS)
+                + " |"
+            )
+        lines.extend(
+            [
+                "",
+                f"- Qwen 请求次数：{summary['request_count']}",
+                f"- 格式/服务重试次数：{summary['retry_count']}",
+                f"- 本地建议降级次数：{summary['local_improvement_fallback_count']}",
+                "",
+                "### 分歧最大 3 条",
+                "",
+            ]
+        )
+        for item in summary["largest_disagreements"]:
+            lines.append(
+                f"- {item['id']}：最大指标差 {item['max_difference']:.2f} 分"
+            )
     lines.extend(["", "## 最差 3 条", ""])
     for rank, case_id in enumerate(summary["worst_three"], start=1):
         case = by_id[case_id]
@@ -117,7 +219,29 @@ def _markdown_report(payload: dict[str, Any]) -> str:
         )
     validation = payload.get("validation", {})
     lines.extend(["## 人工参考验证", ""])
-    if validation:
+    if validation and all(
+        mode in validation for mode in ("mock", "qwen", "hybrid")
+    ):
+        lines.extend(
+            [
+                "| 评估器 | 样本数 | Spearman | 正负档均分差 | 标签匹配率 |",
+                "|---|---:|---:|---:|---:|",
+            ]
+        )
+        for mode in ("mock", "qwen", "hybrid"):
+            item = validation[mode]
+            match_rate = item.get("issue_tag_match_rate")
+            match_text = (
+                f"{match_rate:.2%}"
+                if isinstance(match_rate, (int, float))
+                else "N/A"
+            )
+            lines.append(
+                f"| {mode.title()} | {item.get('sample_size')} | "
+                f"{item.get('spearman_correlation')} | "
+                f"{item.get('positive_negative_gap')} | {match_text} |"
+            )
+    elif validation:
         lines.extend(
             [
                 f"- 样本数：{validation.get('sample_size')}",
@@ -183,10 +307,30 @@ def _html_report(payload: dict[str, Any]) -> str:
         f"<tr><td>{html.escape(tag)}</td><td>{count}</td></tr>"
         for tag, count in summary["risk_tag_counts"].items()
     ) or "<tr><td>无</td><td>0</td></tr>"
+    component_html = ""
+    if "component_overall_means" in summary:
+        component_overall = summary["component_overall_means"]
+        component_rows = "".join(
+            f"<tr><td>{mode.title()}</td><td>{component_overall[mode]:.2f}</td></tr>"
+            for mode in ("mock", "qwen", "hybrid")
+        )
+        disagreement_rows = "".join(
+            f"<tr><td>{html.escape(item['id'])}</td><td>{item['max_difference']:.2f}</td></tr>"
+            for item in summary["largest_disagreements"]
+        )
+        component_html = f"""
+<section class="section overview"><div class="panel"><div class="section-title"><h2>Mock / Qwen / Hybrid</h2><p>组件诊断分</p></div><table>{component_rows}</table></div>
+<div class="panel"><div class="section-title"><h2>最大分歧</h2><p>优先人工复核</p></div><table>{disagreement_rows}</table>
+<p class="audit">请求 {summary['request_count']} · 重试 {summary['retry_count']} · 本地建议降级 {summary['local_improvement_fallback_count']}</p></div></section>"""
     validation = payload.get("validation", {})
-    correlation = validation.get("spearman_correlation", "N/A")
-    gap = validation.get("positive_negative_gap", "N/A")
-    match_rate = validation.get("issue_tag_match_rate")
+    displayed_validation = (
+        validation.get("hybrid", {})
+        if isinstance(validation, dict) and "hybrid" in validation
+        else validation
+    )
+    correlation = displayed_validation.get("spearman_correlation", "N/A")
+    gap = displayed_validation.get("positive_negative_gap", "N/A")
+    match_rate = displayed_validation.get("issue_tag_match_rate")
     match_text = f"{match_rate:.1%}" if isinstance(match_rate, (int, float)) else "N/A"
     mode = html.escape(str(payload.get("metadata", {}).get("judge_mode", "unknown")))
     return f"""<!doctype html>
@@ -205,8 +349,9 @@ def _html_report(payload: dict[str, Any]) -> str:
 .foot{{margin-top:30px;color:var(--muted);font-size:12px;line-height:1.7}}@media(max-width:760px){{.hero,.case-grid,.overview{{grid-template-columns:1fr}}.score{{width:110px;height:110px}}.metrics{{grid-template-columns:1fr}}}}
 </style></head><body><main class="shell">
 <section class="hero"><div><div class="eyebrow">QUALITY EVALUATION · {mode}</div><h1>客服自动回复质量评估</h1><p>{summary['case_count']} 条回复的可解释离线评估。分数衡量意图、服务闭环、事实依据、语气与清晰度；无证据的声明被标为待核实，不直接视为错误。</p></div><div class="score"><strong>{summary['overall_mean']:.1f}</strong><span>OVERALL / 100</span></div></section>
-<section class="section"><div class="section-title"><h2>指标表现</h2><p>均分 · 权重 · 样本范围</p></div><div class="metrics">{''.join(metric_cards)}</div></section>
-<section class="section overview"><div class="panel"><div class="section-title"><h2>验证摘要</h2></div><div class="stats"><div class="stat"><b>{correlation}</b><span>Spearman 相关</span></div><div class="stat"><b>{gap}</b><span>正负档均分差</span></div><div class="stat"><b>{match_text}</b><span>问题标签匹配率</span></div></div></div><div class="panel"><div class="section-title"><h2>高频风险</h2></div><table>{risk_rows}</table></div></section>
+	<section class="section"><div class="section-title"><h2>指标表现</h2><p>均分 · 权重 · 样本范围</p></div><div class="metrics">{''.join(metric_cards)}</div></section>
+	{component_html}
+	<section class="section overview"><div class="panel"><div class="section-title"><h2>验证摘要</h2></div><div class="stats"><div class="stat"><b>{correlation}</b><span>Spearman 相关</span></div><div class="stat"><b>{gap}</b><span>正负档均分差</span></div><div class="stat"><b>{match_text}</b><span>问题标签匹配率</span></div></div></div><div class="panel"><div class="section-title"><h2>高频风险</h2></div><table>{risk_rows}</table></div></section>
 <section class="section"><div class="section-title"><h2>最差 3 条</h2><p>按综合分升序，同分按 ID</p></div>{''.join(worst_cards)}</section>
 <p class="foot">报告中 unsupported_claim 仅表示当前输入无法验证，需要商品库、订单系统或政策知识库核实。本报告不将人工参考答案用于单条评分。</p>
 </main></body></html>"""
@@ -225,9 +370,23 @@ def write_reports(result: RunResult, output_dir: Path) -> dict[str, Path]:
         json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
     with csv_path.open("w", encoding="utf-8", newline="") as stream:
+        is_hybrid = any("mock_metrics" in case for case in payload["cases"])
+        component_fields = (
+            [
+                "mock_overall_score",
+                "qwen_overall_score",
+                "max_disagreement",
+                "qwen_request_count",
+                "qwen_retry_count",
+                "local_improvement_fallback",
+            ]
+            if is_hybrid
+            else []
+        )
         fieldnames = [
             "id",
             "overall_score",
+            *component_fields,
             *WEIGHTS.keys(),
             "risk_tags",
             "critical_fail",
@@ -236,8 +395,7 @@ def write_reports(result: RunResult, output_dir: Path) -> dict[str, Path]:
         writer = csv.DictWriter(stream, fieldnames=fieldnames)
         writer.writeheader()
         for case in payload["cases"]:
-            writer.writerow(
-                {
+            row = {
                     "id": case["id"],
                     "overall_score": case["overall_score"],
                     **{
@@ -247,7 +405,20 @@ def write_reports(result: RunResult, output_dir: Path) -> dict[str, Path]:
                     "critical_fail": case["critical_fail"],
                     "improvement": case["improvement"],
                 }
-            )
+            if is_hybrid:
+                row.update(
+                    {
+                        "mock_overall_score": case["mock_overall_score"],
+                        "qwen_overall_score": case["qwen_overall_score"],
+                        "max_disagreement": case["judge_disagreement"]["max"],
+                        "qwen_request_count": case["qwen_request_count"],
+                        "qwen_retry_count": case["qwen_retry_count"],
+                        "local_improvement_fallback": case[
+                            "local_improvement_fallback"
+                        ],
+                    }
+                )
+            writer.writerow(row)
     markdown_path.write_text(_markdown_report(payload), encoding="utf-8")
     html_path.write_text(_html_report(payload), encoding="utf-8")
     return {
