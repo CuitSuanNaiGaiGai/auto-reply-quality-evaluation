@@ -33,10 +33,9 @@ PYTHONPATH=src python3 -m unittest discover -s tests -v
 
 ### 2. 配置 Qwen
 
-Qwen 密钥只放在项目根目录的 `.env`，该文件已被 Git 忽略：
+Qwen 密钥只放在项目根目录的 `.env`，该文件已被 Git 忽略。在项目根目录执行：
 
 ```bash
-cd /Users/zx/Desktop/晓多科技
 cp .env.example .env
 ```
 

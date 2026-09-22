@@ -8,10 +8,10 @@ from reply_eval.env import EnvFileError, load_qwen_env
 
 
 class EnvTests(unittest.TestCase):
-    def write_env(self, content: str) -> Path:
+    def write_env(self, content: str, filename: str = ".env") -> Path:
         directory = tempfile.TemporaryDirectory()
         self.addCleanup(directory.cleanup)
-        path = Path(directory.name) / ".env"
+        path = Path(directory.name) / filename
         path.write_text(content, encoding="utf-8")
         return path
 
@@ -44,6 +44,25 @@ class EnvTests(unittest.TestCase):
             load_qwen_env(path, path.parent)
             self.assertEqual(os.environ["QWEN_API_KEY"], "shell-key")
             self.assertEqual(os.environ["QWEN_MODEL"], "shell-model")
+
+    def test_explicit_file_falls_through_to_default_for_missing_keys(self):
+        explicit = self.write_env(
+            "QWEN_MODEL=explicit-model\n", filename="custom.env"
+        )
+        default = self.write_env(
+            "QWEN_MODEL=default-model\n"
+            "QWEN_BASE_URL=https://default.test/v1\n"
+        )
+        with patch.dict(
+            os.environ, {"QWEN_API_KEY": "shell-key"}, clear=True
+        ):
+            loaded = load_qwen_env(explicit, default.parent)
+            self.assertEqual(loaded, explicit)
+            self.assertEqual(os.environ["QWEN_API_KEY"], "shell-key")
+            self.assertEqual(os.environ["QWEN_MODEL"], "explicit-model")
+            self.assertEqual(
+                os.environ["QWEN_BASE_URL"], "https://default.test/v1"
+            )
 
     def test_default_file_is_loaded_from_requested_directory(self):
         path = self.write_env("QWEN_API_KEY=default-key\n")

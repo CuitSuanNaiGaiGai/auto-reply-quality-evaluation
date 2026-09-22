@@ -157,12 +157,16 @@ class ReportingTests(unittest.TestCase):
         validation = {
             mode: {
                 "sample_size": 3,
-                "spearman_correlation": 0.5,
+                "spearman_correlation": correlation,
                 "positive_negative_gap": 10.0,
                 "issue_tag_match_rate": 0.5,
                 "disagreements": [],
             }
-            for mode in ("mock", "qwen", "hybrid")
+            for mode, correlation in (
+                ("mock", 0.1),
+                ("qwen", 0.2),
+                ("hybrid", 0.3),
+            )
         }
         result = RunResult(
             metadata={"judge_mode": "hybrid", "qwen_model": "qwen-test"},
@@ -190,8 +194,63 @@ class ReportingTests(unittest.TestCase):
         self.assertEqual(summary["local_improvement_fallback_count"], 1)
         self.assertIn("Mock / Qwen / Hybrid", markdown)
         self.assertIn("最大分歧", html)
+        self.assertIn("三路人工参考验证", html)
+        self.assertIn("0.1", html)
+        self.assertIn("0.2", html)
+        self.assertIn("0.3", html)
         self.assertIn("mock_overall_score", csv_rows[0])
         self.assertIn("qwen_overall_score", csv_rows[0])
+
+    def test_qwen_only_report_shows_call_retry_and_fallback_counts(self):
+        names = [
+            "intent_accuracy",
+            "usefulness",
+            "groundedness",
+            "tone",
+            "clarity",
+        ]
+        case = {
+            "id": "case_01",
+            "overall_score": 75,
+            "user_question": "q",
+            "auto_reply": "a",
+            "metrics": {
+                name: {"score": 75, "reason": "r", "evidence": ["e"]}
+                for name in names
+            },
+            "risk_tags": [],
+            "critical_fail": False,
+            "critical_reason": None,
+            "improvement": "local fallback",
+            "evaluator": {
+                "mode": "qwen",
+                "model": "qwen-test",
+                "version": "test-1",
+                "request_count": 2,
+                "retry_count": 1,
+                "local_improvement_fallback": True,
+            },
+        }
+        result = RunResult(
+            metadata={"judge_mode": "qwen", "qwen_model": "qwen-test"},
+            summary={},
+            validation={},
+            cases=[case],
+        )
+
+        with tempfile.TemporaryDirectory() as directory:
+            paths = write_reports(result, Path(directory))
+            payload = json.loads(paths["json"].read_text(encoding="utf-8"))
+            markdown = paths["markdown"].read_text(encoding="utf-8")
+            html = paths["html"].read_text(encoding="utf-8")
+
+        self.assertEqual(payload["summary"]["request_count"], 2)
+        self.assertEqual(payload["summary"]["retry_count"], 1)
+        self.assertEqual(
+            payload["summary"]["local_improvement_fallback_count"], 1
+        )
+        self.assertIn("Qwen 调用审计", markdown)
+        self.assertIn("Qwen 调用审计", html)
 
 
 if __name__ == "__main__":

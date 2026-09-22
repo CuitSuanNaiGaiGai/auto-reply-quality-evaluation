@@ -137,6 +137,29 @@ def build_summary(cases: list[dict[str, Any]]) -> dict[str, Any]:
             bool(case.get("local_improvement_fallback", False))
             for case in hybrid_cases
         )
+    else:
+        qwen_cases = [
+            case
+            for case in cases
+            if case.get("evaluator", {}).get("mode") == "qwen"
+        ]
+        if qwen_cases:
+            summary["request_count"] = sum(
+                int(case["evaluator"].get("request_count", 0))
+                for case in qwen_cases
+            )
+            summary["retry_count"] = sum(
+                int(case["evaluator"].get("retry_count", 0))
+                for case in qwen_cases
+            )
+            summary["local_improvement_fallback_count"] = sum(
+                bool(
+                    case["evaluator"].get(
+                        "local_improvement_fallback", False
+                    )
+                )
+                for case in qwen_cases
+            )
     return summary
 
 
@@ -202,6 +225,17 @@ def _markdown_report(payload: dict[str, Any]) -> str:
             lines.append(
                 f"- {item['id']}：最大指标差 {item['max_difference']:.2f} 分"
             )
+    elif "request_count" in summary:
+        lines.extend(
+            [
+                "",
+                "## Qwen 调用审计",
+                "",
+                f"- 请求次数：{summary['request_count']}",
+                f"- 格式/服务重试次数：{summary['retry_count']}",
+                f"- 本地建议降级次数：{summary['local_improvement_fallback_count']}",
+            ]
+        )
     lines.extend(["", "## 最差 3 条", ""])
     for rank, case_id in enumerate(summary["worst_three"], start=1):
         case = by_id[case_id]
@@ -322,12 +356,41 @@ def _html_report(payload: dict[str, Any]) -> str:
 <section class="section overview"><div class="panel"><div class="section-title"><h2>Mock / Qwen / Hybrid</h2><p>组件诊断分</p></div><table>{component_rows}</table></div>
 <div class="panel"><div class="section-title"><h2>最大分歧</h2><p>优先人工复核</p></div><table>{disagreement_rows}</table>
 <p class="audit">请求 {summary['request_count']} · 重试 {summary['retry_count']} · 本地建议降级 {summary['local_improvement_fallback_count']}</p></div></section>"""
+    elif "request_count" in summary:
+        component_html = f"""
+<section class="section"><div class="panel"><div class="section-title"><h2>Qwen 调用审计</h2><p>请求与本地降级</p></div>
+<div class="stats"><div class="stat"><b>{summary['request_count']}</b><span>请求</span></div><div class="stat"><b>{summary['retry_count']}</b><span>重试</span></div><div class="stat"><b>{summary['local_improvement_fallback_count']}</b><span>本地建议降级</span></div></div></div></section>"""
     validation = payload.get("validation", {})
     displayed_validation = (
         validation.get("hybrid", {})
         if isinstance(validation, dict) and "hybrid" in validation
         else validation
     )
+    validation_comparison_html = ""
+    if isinstance(validation, dict) and all(
+        mode in validation for mode in ("mock", "qwen", "hybrid")
+    ):
+        comparison_rows: list[str] = []
+        for mode in ("mock", "qwen", "hybrid"):
+            item = validation[mode]
+            item_match_rate = item.get("issue_tag_match_rate")
+            item_match_text = (
+                f"{item_match_rate:.1%}"
+                if isinstance(item_match_rate, (int, float))
+                else "N/A"
+            )
+            comparison_rows.append(
+                "<tr>"
+                f"<td>{mode.title()}</td>"
+                f"<td>{item.get('spearman_correlation')}</td>"
+                f"<td>{item.get('positive_negative_gap')}</td>"
+                f"<td>{item_match_text}</td>"
+                "</tr>"
+            )
+        validation_rows = "".join(comparison_rows)
+        validation_comparison_html = f"""
+<section class="section"><div class="panel"><div class="section-title"><h2>三路人工参考验证</h2><p>仅验证，不参与评分</p></div>
+<table><tr><td>评估器</td><td>Spearman</td><td>正负档差</td><td>标签匹配率</td></tr>{validation_rows}</table></div></section>"""
     correlation = displayed_validation.get("spearman_correlation", "N/A")
     gap = displayed_validation.get("positive_negative_gap", "N/A")
     match_rate = displayed_validation.get("issue_tag_match_rate")
@@ -351,6 +414,7 @@ def _html_report(payload: dict[str, Any]) -> str:
 <section class="hero"><div><div class="eyebrow">QUALITY EVALUATION · {mode}</div><h1>客服自动回复质量评估</h1><p>{summary['case_count']} 条回复的可解释离线评估。分数衡量意图、服务闭环、事实依据、语气与清晰度；无证据的声明被标为待核实，不直接视为错误。</p></div><div class="score"><strong>{summary['overall_mean']:.1f}</strong><span>OVERALL / 100</span></div></section>
 <section class="section"><div class="section-title"><h2>指标表现</h2><p>均分 · 权重 · 样本范围</p></div><div class="metrics">{''.join(metric_cards)}</div></section>
 {component_html}
+{validation_comparison_html}
 <section class="section overview"><div class="panel"><div class="section-title"><h2>验证摘要</h2></div><div class="stats"><div class="stat"><b>{correlation}</b><span>Spearman 相关</span></div><div class="stat"><b>{gap}</b><span>正负档均分差</span></div><div class="stat"><b>{match_text}</b><span>问题标签匹配率</span></div></div></div><div class="panel"><div class="section-title"><h2>高频风险</h2></div><table>{risk_rows}</table></div></section>
 <section class="section"><div class="section-title"><h2>最差 3 条</h2><p>按综合分升序，同分按 ID</p></div>{''.join(worst_cards)}</section>
 <p class="foot">报告中 unsupported_claim 仅表示当前输入无法验证，需要商品库、订单系统或政策知识库核实。本报告不将人工参考答案用于单条评分。</p>
